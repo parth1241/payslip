@@ -1,0 +1,352 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { Loader2, Check, ExternalLink, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+interface Employee {
+  name: string;
+  salary: string;
+  walletAddress: string;
+}
+
+interface PayrollTrackerProps {
+  employees: Employee[];
+  executor: () => Promise<string>; // Function that handles building/signing/broadcasting and returns txHash
+  onComplete: () => void;
+}
+
+const STAGES = ["Building tx", "Signing", "Broadcasting", "Confirmed"];
+
+export function PayrollTracker({
+  employees,
+  executor,
+  onComplete,
+}: PayrollTrackerProps) {
+  const [pipelineStage, setPipelineStage] = useState(0);
+  const [txHash, setTxHash] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [confirmedCount, setConfirmedCount] = useState(0);
+  const [networkConfirmed, setNetworkConfirmed] = useState(false);
+  const [startTime] = useState(Date.now());
+  const [timeTaken, setTimeTaken] = useState(0);
+
+  // Ensure timer ticks up while we are processing
+  useEffect(() => {
+    if (pipelineStage === 3 && confirmedCount === employees.length) return;
+    const t = setInterval(() => {
+      setTimeTaken(Math.floor((Date.now() - startTime) / 1000));
+    }, 1000);
+    return () => clearInterval(t);
+  }, [pipelineStage, confirmedCount, employees.length, startTime]);
+
+  // Execute the transaction loop
+  useEffect(() => {
+    let active = true;
+
+    async function run() {
+      // Step 0: Simulate building
+      setPipelineStage(0);
+      await new Promise((r) => setTimeout(r, 600));
+
+      // Step 1: Wait for user to sign via Freighter
+      if (!active) return;
+      setPipelineStage(1);
+
+      try {
+        const hash = await executor();
+        if (!active) return;
+        setTxHash(hash);
+        
+        // Step 2: Broadcasting state
+        setPipelineStage(2);
+      } catch (err: any) {
+        console.error("Execution aborted:", err);
+        if (!active) return;
+        setErrorMsg(err.message || "Transaction explicitly rejected by Freighter or Horizon");
+      }
+    }
+
+    run();
+
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Polling loop
+  useEffect(() => {
+    if (!txHash || networkConfirmed) return;
+
+    let active = true;
+
+    async function poll() {
+      try {
+        const res = await fetch(`/api/check-tx?hash=${txHash}`);
+        const data = await res.json();
+        if (active && data.status === "success" && data.successful) {
+          setNetworkConfirmed(true);
+          setPipelineStage(3); // confirmed stage
+        }
+      } catch (err) {
+        console.error("Polling error", err);
+      }
+    }
+
+    const interval = setInterval(poll, 3000);
+    poll(); // Initial check
+
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, [txHash, networkConfirmed]);
+
+  // Staggered list updates loop
+  useEffect(() => {
+    if (!networkConfirmed) return;
+
+    if (confirmedCount < employees.length) {
+      const stagger = setTimeout(() => {
+        setConfirmedCount((c) => c + 1);
+      }, 800);
+      return () => clearTimeout(stagger);
+    }
+  }, [networkConfirmed, confirmedCount, employees.length]);
+
+  const allCompleted = networkConfirmed && confirmedCount === employees.length;
+
+  // Render variables
+  const totalAmount = employees.reduce((sum, e) => sum + parseFloat(e.salary), 0);
+  const networkFeeEst = 0.00001;
+
+  if (allCompleted) {
+    return (
+      <div className="flex flex-col items-center justify-center py-10 px-4 text-center animate-in fade-in zoom-in duration-500">
+        <div className="absolute inset-x-0 -top-24 -bottom-24 bg-gradient-to-b from-primary/10 via-transparent to-transparent opacity-50 blur-xl block pointer-events-none" />
+        
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mb-6 shadow-[0_0_40px_rgba(16,185,129,0.3)]">
+          <Check className="h-8 w-8" />
+        </div>
+        <h2 className="text-2xl font-bold text-foreground mb-2">
+          Payroll Complete!
+        </h2>
+        <p className="text-muted-foreground text-[14px]">
+          Successfully executed on the Stellar blockchain.
+        </p>
+
+        <div className="mt-8 mb-8 grid grid-cols-3 gap-4 w-full">
+          <div className="p-4 bg-muted/40 rounded-lg border border-border/40">
+            <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mb-1">
+              Total Sent
+            </p>
+            <p className="font-mono text-[16px] font-bold text-foreground">
+              {totalAmount.toFixed(2)}
+            </p>
+          </div>
+          <div className="p-4 bg-muted/40 rounded-lg border border-border/40">
+            <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mb-1">
+              Network Fee
+            </p>
+            <p className="font-mono text-[16px] font-bold text-foreground">
+              {networkFeeEst.toFixed(5)}
+            </p>
+          </div>
+          <div className="p-4 bg-muted/40 rounded-lg border border-border/40">
+            <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mb-1">
+              Final Time
+            </p>
+            <p className="font-mono text-[16px] font-bold text-foreground">
+              {timeTaken}s
+            </p>
+          </div>
+        </div>
+
+        <a
+          href={`https://stellar.expert/explorer/testnet/tx/${txHash}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Button
+            variant="outline"
+            className="w-full gap-2 border-primary/40 hover:bg-primary/10"
+          >
+            View all on Stellar Expert
+            <ExternalLink className="h-4 w-4" />
+          </Button>
+        </a>
+
+        <Button className="w-full mt-3" onClick={onComplete}>
+          Close Dashboard
+        </Button>
+      </div>
+    );
+  }
+
+  if (errorMsg) {
+    return (
+      <div className="flex flex-col items-center justify-center py-10 px-4 text-center animate-in fade-in zoom-in duration-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 text-red-400 border border-red-500/30 mb-6 shadow-[0_0_40px_rgba(239,68,68,0.3)]">
+          <ShieldCheck className="h-8 w-8" />
+        </div>
+        <h2 className="text-2xl font-bold text-foreground mb-2">
+          Execution Aborted
+        </h2>
+        <p className="text-muted-foreground text-[14px]">
+          {errorMsg}
+        </p>
+
+        <Button className="w-full mt-8" onClick={onComplete}>
+          Return to Dashboard
+        </Button>
+      </div>
+    );
+  }
+
+  const progressPercentage = (confirmedCount / employees.length) * 100;
+
+  return (
+    <div className="p-2">
+      {/* ─── Pipeline Vis ─── */}
+      <div className="flex items-center justify-between relative mb-8">
+        <div className="absolute left-[10%] right-[10%] top-4 h-[2px] bg-border/40" />
+        {STAGES.map((label, idx) => {
+          const isActive = pipelineStage === idx;
+          const isComplete = pipelineStage > idx || pipelineStage === 3;
+
+          return (
+            <div key={label} className="relative z-10 flex flex-col items-center">
+              <div
+                className={`h-8 w-8 rounded-full flex items-center justify-center border-2 mb-2 transition-all ${
+                  isComplete
+                    ? "bg-emerald-500/20 border-emerald-500 text-emerald-400"
+                    : isActive
+                    ? "bg-primary/20 border-primary text-primary animate-pulse shadow-[0_0_15px_rgba(99,102,241,0.5)]"
+                    : "bg-card border-border text-muted-foreground"
+                }`}
+              >
+                {isComplete ? (
+                  <Check className="h-4 w-4" />
+                ) : isActive && idx !== 1 ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <span className="text-[11px] font-bold">{idx + 1}</span>
+                )}
+              </div>
+              <span
+                className={`text-[11px] font-medium ${
+                  isActive || isComplete
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                }`}
+              >
+                {label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ─── Progress Bar ─── */}
+      <div className="mb-6">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-[13px] font-medium text-slate-300">
+            {confirmedCount} of {employees.length} payments confirmed
+          </span>
+          <span className="text-[12px] font-mono text-cyan-400">
+            {Math.round(progressPercentage)}%
+          </span>
+        </div>
+        <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-cyan-400 transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.5)]"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+      </div>
+
+      {/* ─── Employee Status List ─── */}
+      <div className="space-y-2 max-h-[220px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10">
+        {employees.map((emp, index) => {
+          let rowStatus = "Pending";
+          if (pipelineStage < 2) rowStatus = "Waiting Details";
+          else if (pipelineStage === 2) rowStatus = "Processing";
+          else if (index < confirmedCount) rowStatus = "Confirmed";
+          else rowStatus = "Processing";
+
+          const isConfirmed = rowStatus === "Confirmed";
+          const isProcessing = rowStatus === "Processing";
+
+          return (
+            <div
+              key={emp.walletAddress}
+              className={`p-3 rounded-lg border text-[13px] transition-all flex items-center justify-between ${
+                isConfirmed
+                  ? "bg-emerald-500/10 border-emerald-500/30 shadow-[inset_0_0_15px_rgba(16,185,129,0.1)]"
+                  : isProcessing
+                  ? "bg-primary/10 border-primary/30"
+                  : "bg-muted/30 border-transparent"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className={`flex h-7 w-7 items-center justify-center rounded-full text-white font-medium text-[11px] ${
+                    isConfirmed ? "bg-emerald-500" : "bg-slate-700"
+                  }`}
+                >
+                  {emp.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </div>
+                <div>
+                  <p
+                    className={`font-medium ${
+                      isConfirmed ? "text-emerald-50" : "text-foreground"
+                    }`}
+                  >
+                    {emp.name}
+                  </p>
+                  {isConfirmed && txHash ? (
+                    <p className="text-[10px] font-mono text-emerald-400/80">
+                      Tx: {txHash.slice(0, 6)}...{txHash.slice(-6)}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+              <div className="text-right flex flex-col items-end">
+                <p className="font-mono font-semibold text-foreground">
+                  {emp.salary}
+                  <span className="text-[10px] text-muted-foreground ml-1">
+                    XLM
+                  </span>
+                </p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  {isConfirmed ? (
+                    <Check className="h-3 w-3 text-emerald-400" />
+                  ) : isProcessing ? (
+                    <Loader2 className="h-3 w-3 text-primary animate-spin" />
+                  ) : (
+                    <ShieldCheck className="h-3 w-3 text-slate-500" />
+                  )}
+                  <span
+                    className={`text-[10.5px] font-medium uppercase tracking-wider ${
+                      isConfirmed
+                        ? "text-emerald-400"
+                        : isProcessing
+                        ? "text-primary"
+                        : "text-slate-500"
+                    }`}
+                  >
+                    {rowStatus}
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
