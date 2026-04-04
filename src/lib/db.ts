@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { env } from "./env";
 
 /**
  * Global is used to preserve the connection across hot-reloads in development.
@@ -13,13 +14,7 @@ declare global {
   };
 }
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
-  );
-}
+const MONGODB_URI = env.MONGODB_URI;
 
 let cached = global._mongooseConnection;
 
