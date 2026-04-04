@@ -11,7 +11,7 @@ const NAV_LINKS = [
   { label: 'About', href: '/about' },
   { label: 'Blog', href: '/blog' },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'How it works', href: '/how-it-works' },
+  { label: 'Features', href: '/#features' },
 ]
 
 export function Navbar() {
@@ -20,6 +20,9 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
+
+  const dashboardHref = session?.user?.role === 'employer' ? '/employer/dashboard' : '/employee/portal';
+  const profileHref = session?.user?.role === 'employer' ? '/employer/settings/account' : '/employee/profile';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -88,9 +91,9 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-4">
-              {session.user?.role === 'employer' && (
+              {session.user?.role && (
                 <Link 
-                  href="/dashboard"
+                  href={dashboardHref}
                   className="hidden sm:flex items-center gap-2 btn-primary !py-2 !px-4 text-xs"
                 >
                   Dashboard <ChevronRight className="h-4 w-4" />
@@ -108,10 +111,10 @@ export function Navbar() {
                 
                 {isProfileOpen && (
                   <div className="absolute top-10 right-0 w-48 bg-[#0f0f2e] border border-white/10 rounded-xl shadow-2xl py-1 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                    <Link href="/profile" className="flex items-center gap-2 px-4 py-2 text-xs text-slate-300 hover:bg-white/5 hover:text-white transition-all">
+                    <Link href={profileHref} className="flex items-center gap-2 px-4 py-2 text-xs text-slate-300 hover:bg-white/5 hover:text-white transition-all">
                       <User className="h-3.5 w-3.5" /> Profile
                     </Link>
-                    <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 text-xs text-slate-300 hover:bg-white/5 hover:text-white transition-all">
+                    <Link href={dashboardHref} className="flex items-center gap-2 px-4 py-2 text-xs text-slate-300 hover:bg-white/5 hover:text-white transition-all">
                       <LayoutDashboard className="h-3.5 w-3.5" /> Dashboard
                     </Link>
                     <div className="h-px bg-white/5 my-1" />

@@ -510,9 +510,9 @@ function PricingCard({ name, price, sub, features, ctaText, featured, theme }: P
         ))}
       </ul>
 
-      <button className={`w-full py-3.5 rounded-xl text-sm font-bold transition-all ${s.btn}`}>
+      <Link href={name === "Enterprise" ? "/contact" : "/signup"} className={`w-full py-3.5 rounded-xl text-sm font-bold transition-all text-center ${s.btn}`}>
         {ctaText}
-      </button>
+      </Link>
 
       {featured && (
         <p className="mt-4 text-center text-[11px] text-textMuted/60">14-day free trial, no card needed</p>
@@ -757,14 +757,14 @@ export default function HomePage() {
 
                 <div className="flex flex-wrap items-center gap-4 mb-14 relative">
                   <Link
-                    href="/employer"
+                    href="/signup"
                     className="rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] hover:bg-indigo-400 transition-all duration-300 relative overflow-hidden group"
                   >
                     <span className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
                     Launch app
                   </Link>
                   <Link
-                    href="/employee"
+                    href="/#features"
                     className="rounded-full border border-primary/40 px-8 py-3.5 text-sm font-semibold text-foreground hover:bg-primary/5 transition-all duration-300"
                   >
                     View demo
@@ -1131,8 +1131,8 @@ function FinalCTASection() {
           <span className="bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-amber-400 bg-clip-text text-transparent">Ready to modernize your payroll?</span>
         </h2>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
-          <Link href="/employer" className="w-full sm:w-auto px-10 py-4 bg-primary text-white rounded-full font-bold text-lg shadow-2xl hover:shadow-primary/25 transition-all">Start for free</Link>
-          <button className="w-full sm:w-auto px-10 py-4 border border-white/20 hover:bg-white/5 rounded-full font-bold text-lg transition-all">Book a demo</button>
+          <Link href="/signup" className="w-full sm:w-auto px-10 py-4 bg-primary text-white rounded-full font-bold text-lg shadow-2xl hover:shadow-primary/25 transition-all">Start for free</Link>
+          <Link href="/contact" className="w-full sm:w-auto px-10 py-4 border border-white/20 hover:bg-white/5 rounded-full font-bold text-lg transition-all text-center">Book a demo</Link>
         </div>
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-xs text-textMuted/60 font-medium tracking-wide">
           <span className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-500" /> No credit card required</span>

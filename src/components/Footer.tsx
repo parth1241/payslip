@@ -8,16 +8,15 @@ const FOOTER_LINKS = {
   product: [
     { label: 'Features', href: '/#features' },
     { label: 'Pricing', href: '/pricing' },
-    { label: 'How it works', href: '/how-it-works' },
-    { label: 'Changelog', href: '/changelog' },
-    { label: 'API', href: '/api-docs' },
+    { label: 'Security', href: '/#security' },
+    { label: 'Stellar Network', href: 'https://stellar.org' },
   ],
   company: [
     { label: 'About', href: '/about' },
     { label: 'Blog', href: '/blog' },
-    { label: 'Team', href: '/team' },
+    { label: 'Our Team', href: '/about/team' },
     { label: 'Careers', href: '/careers' },
-    { label: 'Press', href: '/press' },
+    { label: 'Contact', href: '/contact' },
   ],
 }
 
@@ -104,9 +103,8 @@ export function Footer() {
           </div>
 
           <div className="flex gap-6 text-xs text-slate-500 font-medium">
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-            <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>
