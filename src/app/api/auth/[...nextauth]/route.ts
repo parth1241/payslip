@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import connectDB from "@/lib/db";
 import { User } from "@/lib/models/User";
+import { Organisation } from "@/lib/models/Organisation";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -21,7 +22,7 @@ export const authOptions: NextAuthOptions = {
 
         // WALLET-TOKEN LOGIN FLOW
         if (credentials?.walletToken) {
-           const secret = process.env.NEXTAUTH_SECRET || "default_local_secret";
+           const secret = process.env.NEXTAUTH_SECRET;
            // Requires `jwt` from jsonwebtoken, we'll manually verify it here
            try {
              const jwtAPI = require("jsonwebtoken");
@@ -62,6 +63,15 @@ export const authOptions: NextAuthOptions = {
         user.lastLogin = new Date();
         await user.save();
 
+        // Fetch primary organisation if employer
+        let orgName = undefined;
+        if (user.role === "employer") {
+          const org = await Organisation.findOne({ 
+            $or: [{ ownerId: user._id }, { "members.userId": user._id }] 
+          });
+          if (org) orgName = org.name;
+        }
+
         return {
           id: user._id.toString(),
           email: user.email,
@@ -69,7 +79,8 @@ export const authOptions: NextAuthOptions = {
           role: user.role,
           linkedWallet: user.linkedWallet,
           rememberMe: credentials?.rememberMe === "true",
-          lastLogin: user.lastLogin
+          lastLogin: user.lastLogin,
+          orgName
         };
       }
     })
@@ -85,11 +96,13 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name;
         token.role = user.role;
         token.linkedWallet = user.linkedWallet;
-        token.rememberMe = user.rememberMe;
-        token.lastLogin = user.lastLogin;
+        token.rememberMe = (user as any).rememberMe;
+        token.lastLogin = (user as any).lastLogin;
+        token.orgName = (user as any).orgName;
 
         if (token.rememberMe) {
-          token.maxAge = 30 * 24 * 60 * 60; // 30 days
+          // Note: token.exp can be set here but NextAuth usually respects maxAge
+          token.exp = Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60);
         }
       }
       return token;
@@ -101,7 +114,9 @@ export const authOptions: NextAuthOptions = {
           userId: token.id as string,
           role: token.role as string,
           linkedWallet: token.linkedWallet as string | undefined,
-          lastLogin: token.lastLogin as Date
+          lastLogin: token.lastLogin as Date,
+          orgName: token.orgName as string | undefined,
+          rememberMe: token.rememberMe as boolean
         };
       }
       return session;
@@ -112,6 +127,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
 
 const handler = NextAuth(authOptions);
 

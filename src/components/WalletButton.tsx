@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useSession } from "next-auth/react";
 import { 
   Wallet, 
   Loader2, 
@@ -19,6 +20,7 @@ function truncateAddress(address: string) {
 }
 
 export function WalletButton() {
+  const { data: session, update } = useSession();
   const { addToast } = useToast();
   const [freighterInstalled, setFreighterInstalled] = useState<boolean | null>(null);
   const [address, setAddress] = useState<string | null>(null);
@@ -60,6 +62,24 @@ export function WalletButton() {
     try {
       const pubKey = await connectWallet();
       setAddress(pubKey);
+      
+      // If user is logged in but has no linked wallet, link it now
+      if (session?.user && !(session.user as any).linkedWallet) {
+        try {
+          const res = await fetch("/api/user/link-wallet", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ walletAddress: pubKey }),
+          });
+          if (res.ok) {
+            await update({ linkedWallet: pubKey });
+            addToast("Wallet linked to your account", "success");
+          }
+        } catch (linkErr) {
+          console.error("Failed to link wallet:", linkErr);
+        }
+      }
+
       addToast(`Connected to Stellar Testnet · ${truncateAddress(pubKey)}`, "success");
     } catch (err) {
       addToast("Connection request rejected or failed", "error");

@@ -30,6 +30,11 @@ import {
 import {
   AreaChart,
   Area,
+  BarChart,
+  Bar,
+  Cell,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -125,13 +130,22 @@ const SEED_EMPLOYEES: Employee[] = [
 ];
 
 const MOCK_CHART_DATA = [
-  { name: "Oct", value: 4200, lastMonth: 3800 },
-  { name: "Nov", value: 3800, lastMonth: 4100 },
-  { name: "Dec", value: 5000, lastMonth: 4200 },
   { name: "Jan", value: 4800, lastMonth: 5000 },
   { name: "Feb", value: 5200, lastMonth: 4800 },
   { name: "Mar", value: 4450, lastMonth: 5200 },
+  { name: "Apr", value: 3800, lastMonth: 4100 },
+  { name: "May", value: 5000, lastMonth: 4200 },
+  { name: "Jun", value: 4200, lastMonth: 3800 },
 ];
+
+const BAR_COLORS: Record<string, string> = {
+  Jan: "#6366f1",
+  Feb: "#8b5cf6",
+  Mar: "#06b6d4",
+  Apr: "#10b981",
+  May: "#f59e0b",
+  Jun: "#d946ef",
+};
 
 /* ─────────────────────────────────────────────
  *  Helpers
@@ -154,24 +168,25 @@ const statusConfig: Record<
 > = {
   active: {
     label: "Active",
-    className: "bg-emerald-500/15 text-emerald-400 border-emerald-500/25",
+    className: "bg-emerald/15 text-emerald border-emerald/25",
   },
   pending: {
     label: "Pending",
-    className: "bg-amber-500/15 text-amber-400 border-amber-500/25",
+    className: "bg-amber/15 text-amber border-amber/25",
   },
   inactive: {
     label: "Inactive",
-    className: "bg-slate-400/15 text-slate-400 border-slate-400/25",
+    className: "bg-surface text-textMuted border-borderDefault",
   },
 };
 
 const NAV_ITEMS = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: Users, label: "Employees", active: false },
-  { icon: FileText, label: "Payroll History", active: false },
-  { icon: Wallet, label: "Wallet", active: false },
-  { icon: Settings, label: "Settings", active: false },
+  { icon: LayoutDashboard, label: "Dashboard", active: true, color: "#6366f1" },
+  { icon: Users, label: "Employees", active: false, color: "#8b5cf6" },
+  { icon: Coins, label: "Payroll", active: false, color: "#06b6d4" },
+  { icon: FileText, label: "History", active: false, color: "#10b981" },
+  { icon: Activity, label: "Analytics", active: false, color: "#0ea5e9" },
+  { icon: Settings, label: "Settings", active: false, color: "#f59e0b" },
 ];
 
 /* ─────────────────────────────────────────────
@@ -512,34 +527,58 @@ export default function EmployerDashboard() {
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       {/* --- Sidebar --- */}
-      <aside className="hidden lg:flex w-64 flex-col bg-card border-r border-border/20 text-foreground transition-all duration-300 relative z-20">
-        <div className="absolute inset-y-0 right-0 w-[1px] bg-gradient-to-b from-primary/30 to-transparent" />
+      <aside className="hidden lg:flex w-64 flex-col bg-[#0f0f2e] border-r border-white/[0.06] text-foreground transition-all duration-300 relative z-20">
+        {/* Logo Area */}
+        <div className="px-6 py-8 border-b border-white/[0.06]">
+          <h1 className="text-2xl font-bold gradient-text tracking-tight">PaySlip</h1>
+          <p className="text-[11px] text-textMuted font-medium uppercase tracking-widest mt-1">Payroll on Stellar</p>
+        </div>
         
-        {/* Org Switcher Component replaces Logo block */}
-        <OrgSwitcher />
-
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-1.5">
-          {NAV_ITEMS.map(({ icon: Icon, label, active }) => (
+        <nav className="flex-1 px-3 py-6 space-y-1">
+          {NAV_ITEMS.map(({ icon: Icon, label, active, color }) => (
             <button
               key={label}
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-all duration-200 group ${
+              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-all duration-200 group relative ${
                 active
-                  ? "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20"
-                  : "text-muted-foreground hover:text-foreground hover:bg-white/[0.04]"
+                  ? "text-foreground"
+                  : "text-textMuted hover:text-foreground hover:bg-white/[0.04]"
               }`}
+              style={{
+                backgroundColor: active ? `${color}14` : undefined, // 0.08 opacity in hex is approx 14
+              }}
             >
-              <Icon className={`h-4 w-4 ${active ? 'text-primary' : 'group-hover:text-primary transition-colors'}`} />
-              {label}
+              {active && (
+                <div 
+                  className="absolute left-0 w-[4px] h-6 rounded-r-full" 
+                  style={{ backgroundColor: color }} 
+                />
+              )}
+              <Icon 
+                className={`h-4 w-4 transition-colors ${active ? "" : "group-hover:text-foreground"}`} 
+                style={{ color: active ? color : undefined }}
+              />
+              <span style={{ color: active ? color : undefined }}>{label}</span>
             </button>
           ))}
         </nav>
 
-        {/* User */}
-        <div className="border-t border-border/10 px-4 py-4 bg-background/30 w-full flex flex-col align-center">
-          <WalletButton />
-          <div className="mt-3 text-center text-[10px] text-muted-foreground font-mono">
-            Last login: {lastLoginText}
+        {/* Sidebar Bottom Section */}
+        <div className="p-5 border-t border-white/[0.06] bg-black/20 space-y-4">
+          <div className="space-y-1">
+            <p className="text-[10px] font-bold text-textHint uppercase tracking-wider">Available Balance</p>
+            <p className="text-lg font-bold gradient-text-2 font-mono truncate">
+              {balance ? `${formatXLM(Number(balance))} XLM` : "0.00 XLM"}
+            </p>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="px-2.5 py-1 rounded-full bg-sky/15 border border-sky/20">
+              <span className="text-[9px] font-black text-sky uppercase tracking-tighter">Stellar Testnet</span>
+            </div>
+            <span className="text-[10px] text-textHint font-medium">
+              {lastLoginText}
+            </span>
           </div>
         </div>
       </aside>
@@ -551,7 +590,7 @@ export default function EmployerDashboard() {
         }`}
       >
         {/* Header bar */}
-        <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border/20 bg-background/80 backdrop-blur-xl px-6 lg:px-8 py-4">
+        <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/[0.06] bg-[#0a0a1a]/80 backdrop-blur-xl px-6 lg:px-8 py-4">
           <div className="flex items-center gap-6">
             <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
             
@@ -559,50 +598,51 @@ export default function EmployerDashboard() {
             <div className="hidden sm:flex items-center gap-4">
               <CurrencyToggle />
               
-              <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <div className="flex items-center gap-2 px-3 py-1 bg-sky border border-sky/20 rounded-full">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
                 </span>
-                <span className="text-[11px] font-bold text-emerald-400 tracking-wide uppercase">Stellar Testnet</span>
+                <span className="text-[10px] font-black text-white tracking-widest uppercase">Stellar Testnet</span>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-5 relative">
             {/* Wallet Balance Widget */}
-            <div className="hidden sm:flex items-center gap-3 px-3 py-1 bg-white/[0.03] border border-white/10 rounded-full">
-               <Wallet className="h-3 w-3 text-primary" />
-               <span className="text-[12px] font-medium text-white font-mono tracking-tight">
-                 {balance === null ? <span title="Install Freighter to configure bounds">—</span> : `${balance} XLM`}
+            <div className="hidden sm:flex items-center gap-3 px-3 py-1.5 bg-white/[0.03] border border-white/10 rounded-full">
+               <Wallet className="h-3.5 w-3.5 text-sky" />
+               <span className="text-[13px] font-bold gradient-text-2 font-mono tracking-tight">
+                 {balance === null ? <span title="Install Freighter to configure bounds">—</span> : `${formatXLM(Number(balance))} XLM`}
                </span>
                <button onClick={refreshBalance} disabled={balanceLoading}>
-                  <RefreshCw className={`h-[10px] w-[10px] text-muted-foreground transition-transform ${balanceLoading ? "animate-spin text-primary" : "hover:text-foreground"}`} />
+                  <RefreshCw className={`h-[12px] w-[12px] text-textMuted transition-transform ${balanceLoading ? "animate-spin text-sky" : "hover:text-foreground"}`} />
                </button>
             </div>
+            
             {/* Price Badge Dropdown */}
             <div className="relative">
               <button 
                 onClick={() => setPriceOpen(!priceOpen)} 
-                className="flex items-center gap-2 px-3 py-1 bg-slate-800 border border-slate-700 hover:border-slate-600 rounded-full transition-all"
+                className="flex items-center gap-2 px-3 py-1.5 bg-surface border border-white/10 hover:border-white/20 rounded-full transition-all"
               >
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan"></span>
                 </span>
                 <span className="text-[12px] font-bold text-white font-mono">XLM ${xlmUsdRate.toFixed(4)}</span>
               </button>
               
               {priceOpen && (
-                 <div className="absolute top-10 right-0 w-64 bg-card border border-border/40 shadow-xl rounded-xl p-3 z-50 animate-in fade-in zoom-in-95">
-                    <div className="flex items-center justify-between mb-2 pb-2 border-b border-border/20">
-                      <p className="text-xs text-muted-foreground font-semibold uppercase">7-Day XLM/USD</p>
-                      <Activity className="h-3 w-3 text-cyan-400" />
+                 <div className="absolute top-12 right-0 w-64 bg-surfaceUp border border-white/10 shadow-2xl rounded-xl p-3 z-50 animate-in fade-in zoom-in-95">
+                    <div className="flex items-center justify-between mb-2 pb-2 border-b border-white/10">
+                      <p className="text-[10px] text-textMuted font-bold uppercase tracking-wider">7-Day XLM/USD</p>
+                      <Activity className="h-3 w-3 text-cyan" />
                     </div>
                     <div className="h-24 w-full">
                       <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={chartData}>
-                          <Area type="monotone" dataKey="price" stroke="#22d3ee" fill="#22d3ee" fillOpacity={0.2} />
+                          <Area type="monotone" dataKey="price" stroke="#06b6d4" fill="#06b6d4" fillOpacity={0.2} />
                           <YAxis domain={['auto', 'auto']} hide />
                         </AreaChart>
                       </ResponsiveContainer>
@@ -612,16 +652,15 @@ export default function EmployerDashboard() {
             </div>
 
             {time && (
-              <span className="hidden md:block text-[12px] font-medium text-muted-foreground font-mono">
+              <span className="hidden md:block text-[12px] font-medium text-textMuted font-mono">
                 {time.toLocaleDateString("en-US", { weekday: 'short', month: 'short', day: 'numeric' })} • {time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
               </span>
             )}
-            
-            <button className="relative text-muted-foreground hover:text-foreground transition-colors">
-              <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            <button className="relative transition-colors group">
+              <Bell className="h-5 w-5 text-fuchsia" />
+              <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-fuchsia opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-fuchsia shadow-[0_0_10px_rgba(217,70,239,0.5)]"></span>
               </span>
             </button>
 
@@ -665,117 +704,156 @@ export default function EmployerDashboard() {
         <div className="px-6 lg:px-8 py-6 space-y-6 flex-1">
           {/* 1. Stats Row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <Card className="relative overflow-hidden bg-card border-l-[3px] border-l-primary/60 border-t-0 border-r-0 border-b-0 shadow-lg">
-              <CardHeader className="flex flex-row items-center justify-between pb-2 pt-5 bg-card">
-                <CardTitle className="text-[13px] font-semibold text-muted-foreground">Total Employees</CardTitle>
-                <Users className="h-[18px] w-[18px] text-primary" />
+            <Card className="relative overflow-hidden bg-[#0f0f2e] border-l-[3px] border-l-[#8b5cf6] border-t-0 border-r-0 border-b-0 shadow-2xl transition-all hover:bg-[#1a1a3e] group">
+              <CardHeader className="flex flex-row items-center justify-between pb-2 pt-5">
+                <CardTitle className="text-[13px] font-bold text-textMuted uppercase tracking-wider">Total Employees</CardTitle>
+                <div className="h-8 w-8 rounded-lg bg-[#8b5cf61a] flex items-center justify-center">
+                  <Users className="h-[18px] w-[18px] text-[#a78bfa]" />
+                </div>
               </CardHeader>
-              <CardContent className="bg-card">
-                <p className="text-2xl font-bold text-foreground font-mono">{animEmployees.toFixed(0)}</p>
-                <p className="text-[11px] font-medium text-emerald-400 mt-2 flex items-center gap-1">
+              <CardContent>
+                <p className="text-3xl font-bold text-white font-mono tracking-tighter">{animEmployees.toFixed(0)}</p>
+                <p className="text-[11px] font-medium text-emerald mt-3 flex items-center gap-1">
                   <ArrowUpRight className="h-3 w-3" /> 12% vs last month
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="relative overflow-hidden bg-card border-l-[3px] border-l-cyan-400/60 border-t-0 border-r-0 border-b-0 shadow-lg">
+            <Card className="relative overflow-hidden bg-[#0f0f2e] border-l-[3px] border-l-[#f59e0b] border-t-0 border-r-0 border-b-0 shadow-2xl transition-all hover:bg-[#1a1a3e] group">
               <CardHeader className="flex flex-row items-center justify-between pb-2 pt-5">
-                <CardTitle className="text-[13px] font-semibold text-muted-foreground">Next Payroll</CardTitle>
-                <CalendarClock className="h-[18px] w-[18px] text-cyan-400" />
+                <CardTitle className="text-[13px] font-bold text-textMuted uppercase tracking-wider">Next Payroll</CardTitle>
+                <div className="h-8 w-8 rounded-lg bg-[#f59e0b1a] flex items-center justify-center">
+                  <CalendarClock className="h-[18px] w-[18px] text-[#fbbf24]" />
+                </div>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold text-foreground font-mono">14 <span className="text-sm font-sans text-muted-foreground">days</span></p>
-                <p className="text-[11px] font-medium text-muted-foreground mt-2">Expected April 15, 2026</p>
+                <p className="text-3xl font-bold text-white font-mono tracking-tighter">14 <span className="text-sm font-sans text-textMuted uppercase">days</span></p>
+                <p className="text-[11px] font-medium text-textHint mt-3 tracking-wide">Expected April 15, 2026</p>
               </CardContent>
             </Card>
 
-            <Card className="relative overflow-hidden bg-card border-l-[3px] border-l-violet-400/60 border-t-0 border-r-0 border-b-0 shadow-lg">
+            <Card className="relative overflow-hidden bg-[#0f0f2e] border-l-[3px] border-l-[#06b6d4] border-t-0 border-r-0 border-b-0 shadow-2xl transition-all hover:bg-[#1a1a3e] group">
               <CardHeader className="flex flex-row items-center justify-between pb-2 pt-5">
-                <CardTitle className="text-[13px] font-semibold text-muted-foreground">Total Disbursed</CardTitle>
-                <Coins className="h-[18px] w-[18px] text-violet-400" />
+                <CardTitle className="text-[13px] font-bold text-textMuted uppercase tracking-wider">Total Disbursed</CardTitle>
+                <div className="h-8 w-8 rounded-lg bg-[#06b6d41a] flex items-center justify-center">
+                  <Coins className="h-[18px] w-[18px] text-[#22d3ee]" />
+                </div>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold text-foreground font-mono">
-                  {formatXLM(animDisbursed)} <span className="text-sm font-sans text-muted-foreground">XLM</span>
+                <p className="text-3xl font-bold font-mono tracking-tighter gradient-text-2">
+                  {formatXLM(animDisbursed)} <span className="text-sm font-sans text-textMuted uppercase">XLM</span>
                 </p>
-                <p className="text-[11px] font-medium text-emerald-400 mt-2 flex items-center gap-1">
+                <p className="text-[11px] font-medium text-emerald mt-3 flex items-center gap-1">
                   <ArrowUpRight className="h-3 w-3" /> 4.2% vs last month
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="relative overflow-hidden bg-card border-l-[3px] border-l-emerald-400/60 border-t-0 border-r-0 border-b-0 shadow-lg">
+            <Card className="relative overflow-hidden bg-[#0f0f2e] border-l-[3px] border-l-[#10b981] border-t-0 border-r-0 border-b-0 shadow-2xl transition-all hover:bg-[#1a1a3e] group">
               <CardHeader className="flex flex-row items-center justify-between pb-2 pt-5">
-                <CardTitle className="text-[13px] font-semibold text-muted-foreground">Success Rate</CardTitle>
-                <Activity className="h-[18px] w-[18px] text-emerald-400" />
+                <CardTitle className="text-[13px] font-bold text-textMuted uppercase tracking-wider">Success Rate</CardTitle>
+                <div className="h-8 w-8 rounded-lg bg-[#10b9811a] flex items-center justify-center">
+                  <Activity className="h-[18px] w-[18px] text-[#34d399]" />
+                </div>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold text-foreground font-mono">{animSuccessRate.toFixed(1)}<span className="text-sm">%</span></p>
-                <p className="text-[11px] font-medium text-muted-foreground mt-2">Zero network rejections</p>
+                <p className="text-3xl font-bold text-white font-mono tracking-tighter">{animSuccessRate.toFixed(1)}<span className="text-sm">%</span></p>
+                <p className="text-[11px] font-medium text-textHint mt-3 tracking-wide">Zero network rejections</p>
               </CardContent>
             </Card>
           </div>
 
           {/* 2. Chart Section */}
-          <Card className="bg-card border-border/20 shadow-xl overflow-hidden relative">
-            <CardHeader className="flex flex-row items-center justify-between border-b border-border/10 pb-4">
+          <Card className="bg-[#0f0f2e] border-white/[0.06] shadow-2xl overflow-hidden relative">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-white/[0.06] pb-4">
               <div>
-                <CardTitle className="text-base font-semibold text-foreground">Disbursement History</CardTitle>
-                <p className="text-[12px] text-muted-foreground mt-1">XLM volume sent over recent months.</p>
+                <CardTitle className="text-base font-bold text-white tracking-tight">Disbursement Intelligence</CardTitle>
+                <p className="text-[12px] text-textMuted mt-1">XLM volume sent over recent months compared to prior period.</p>
               </div>
-              <div className="flex bg-background rounded-lg p-1 border border-border/20 shadow-inner">
+              <div className="flex bg-black/20 rounded-lg p-1 border border-white/[0.06] shadow-inner">
                 <button 
                   onClick={() => setChartView("current")}
-                  className={`px-3 py-1 rounded-md text-[12px] font-semibold transition-colors ${chartView === "current" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                  className={`px-3 py-1 rounded-md text-[11px] font-bold uppercase tracking-widest transition-all ${chartView === "current" ? "bg-indigo text-white shadow-lg" : "text-textMuted hover:text-white"}`}
                 >
                   This Year
                 </button>
                 <button 
                   onClick={() => setChartView("previous")}
-                  className={`px-3 py-1 rounded-md text-[12px] font-semibold transition-colors ${chartView === "previous" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                  className={`px-3 py-1 rounded-md text-[11px] font-bold uppercase tracking-widest transition-all ${chartView === "previous" ? "bg-indigo text-white shadow-lg" : "text-textMuted hover:text-white"}`}
                 >
                   Last Year
                 </button>
               </div>
             </CardHeader>
-            <CardContent className="pt-6 pb-2 pl-0">
-              <div className="h-[240px] w-full">
+            <CardContent className="pt-8 pb-4 pl-0">
+              <div className="h-[280px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={MOCK_CHART_DATA} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                    <defs>
-                      <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                  <BarChart data={MOCK_CHART_DATA} margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
+                    <XAxis 
+                      dataKey="name" 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#64748b", fontSize: 11, fontWeight: 500 }}
+                      dy={10}
+                    />
+                    <YAxis 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#64748b", fontSize: 11, fontWeight: 500 }}
+                    />
+                    <Tooltip 
+                      cursor={{ fill: "rgba(255,255,255,0.03)" }}
+                      contentStyle={{ 
+                        backgroundColor: "#1a1a3e", 
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderRadius: "12px",
+                        fontSize: "12px",
+                        color: "#fff"
+                      }}
+                    />
+                    <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={40}>
+                      {MOCK_CHART_DATA.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={BAR_COLORS[entry.name] || "#6366f1"} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 2.5 BarChart Highlights */}
+          <Card className="bg-[#0f0f2e] border-white/[0.06] shadow-2xl overflow-hidden relative">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-white/[0.06] pb-4">
+              <div>
+                <CardTitle className="text-base font-bold text-white tracking-tight">Monthly Volume Distribution</CardTitle>
+                <p className="text-[12px] text-textMuted mt-1">Cross-departmental disbursement analytics by month.</p>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-8 pb-4 pl-0 border-t-0">
+              <div className="h-[200px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={MOCK_CHART_DATA} margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
                     <XAxis 
                       dataKey="name" 
                       axisLine={false} 
                       tickLine={false} 
-                      tick={{fill: '#94a3b8', fontSize: 12}} 
+                      tick={{fill: '#475569', fontSize: 11, fontWeight: 700}} 
                       dy={10} 
                     />
-                    <YAxis 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{fill: '#94a3b8', fontSize: 12, fontFamily: 'monospace'}}
-                      tickFormatter={(value) => `${value}`}
-                    />
+                    <YAxis hide />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: '#0f172a', borderColor: 'rgba(99,102,241,0.2)', borderRadius: '8px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.5)' }} 
-                      itemStyle={{ color: '#f1f5f9', fontWeight: 600, fontFamily: 'monospace' }} 
+                      cursor={{fill: 'rgba(255,255,255,0.03)'}}
+                      contentStyle={{ backgroundColor: '#0a0a1a', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px' }}
                     />
-                    <Area 
-                      type="monotone" 
-                      dataKey={chartView === "current" ? "value" : "lastMonth"} 
-                      stroke="#22d3ee" 
-                      strokeWidth={3}
-                      fillOpacity={1} 
-                      fill="url(#colorValue)" 
-                      animationDuration={1000}
-                    />
-                  </AreaChart>
+                    <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                      {MOCK_CHART_DATA.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={BAR_COLORS[entry.name] || '#6366f1'} />
+                      ))}
+                    </Bar>
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
             </CardContent>
@@ -832,7 +910,7 @@ export default function EmployerDashboard() {
                     return (
                       <TableRow
                         key={emp.id}
-                        className="group border-border/10 hover:bg-primary/5 transition-colors border-l-4 border-l-transparent hover:border-l-primary cursor-pointer"
+                        className="group border-white/[0.04] hover:bg-indigo/05 transition-all border-l-4 border-l-transparent hover:border-l-indigo cursor-pointer"
                       >
                         <TableCell className="font-medium text-foreground py-4">
                           <div className="flex items-center gap-3">
@@ -916,7 +994,7 @@ export default function EmployerDashboard() {
                 {currency === 'XLM' && (
                   <div className="absolute right-3 top-2.5 text-[11px] text-muted-foreground flex items-center gap-1.5">
                     ≈ ${(Number(formSalary || 0) * xlmUsdRate).toFixed(2)} 
-                    <Activity title="Refresh Price" className="h-3 w-3 cursor-pointer hover:text-cyan-400 transition-colors" onClick={refreshRate} />
+                    <Activity className="h-3 w-3 cursor-pointer hover:text-cyan transition-colors" onClick={refreshRate} />
                   </div>
                 )}
               </div>

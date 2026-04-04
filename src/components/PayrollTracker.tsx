@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Loader2, Check, ExternalLink, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Confetti } from "@/components/Confetti";
 
 interface Employee {
   name: string;
@@ -124,6 +125,7 @@ export function PayrollTracker({
   if (allCompleted) {
     return (
       <div className="flex flex-col items-center justify-center py-10 px-4 text-center animate-in fade-in zoom-in duration-500">
+        <Confetti />
         <div className="absolute inset-x-0 -top-24 -bottom-24 bg-gradient-to-b from-primary/10 via-transparent to-transparent opacity-50 blur-xl block pointer-events-none" />
         
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mb-6 shadow-[0_0_40px_rgba(16,185,129,0.3)]">

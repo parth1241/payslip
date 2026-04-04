@@ -26,6 +26,7 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isLocked, setIsLocked] = useState(false);
+  const [lockTimeLeft, setLockTimeLeft] = useState<number>(0); // in seconds
   const [shake, setShake] = useState(false);
 
   useEffect(() => {
@@ -34,18 +35,33 @@ export default function LoginPage() {
       if (returnUrl) {
         router.push(decodeURIComponent(returnUrl));
       } else if (session?.user?.role === "employer") {
-        router.push("/employer");
+        router.push("/employer/dashboard");
       } else if (session?.user?.role === "employee") {
-        router.push("/employee");
+        router.push("/employee/portal");
       }
     }
   }, [status, router, searchParams, session]);
+
+  // Countdown timer for locked accounts
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isLocked && lockTimeLeft > 0) {
+      timer = setInterval(() => {
+        setLockTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (lockTimeLeft === 0 && isLocked) {
+      setIsLocked(false);
+      setErrorMsg("");
+    }
+    return () => clearInterval(timer);
+  }, [isLocked, lockTimeLeft]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMsg("");
     setIsLocked(false);
+    setLockTimeLeft(0);
 
     try {
       const result = await signIn("credentials", {
@@ -56,13 +72,21 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
+        setShake(true);
+        setTimeout(() => setShake(false), 500);
+
         if (result.error.includes("Account locked")) {
           setIsLocked(true);
           setErrorMsg(result.error);
+          // Extract minutes from "Account locked. Try again in X minutes."
+          const match = result.error.match(/in (\d+) minutes/);
+          if (match && match[1]) {
+            setLockTimeLeft(parseInt(match[1]) * 60);
+          } else {
+            setLockTimeLeft(900); // fallback to 15 mins
+          }
         } else {
           setErrorMsg("Invalid email or password");
-          setShake(true);
-          setTimeout(() => setShake(false), 500);
         }
       } else if (result?.ok) {
         addToast("Signed in successfully", "success");
@@ -72,6 +96,12 @@ export default function LoginPage() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const formatLockTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const handleWalletLogin = async () => {
@@ -99,6 +129,8 @@ export default function LoginPage() {
       });
 
       if (loginRes?.error) {
+        setShake(true);
+        setTimeout(() => setShake(false), 500);
         addToast("Wallet authorization failed", "error");
       } else {
         addToast("Signed in securely!", "success");
@@ -163,9 +195,14 @@ export default function LoginPage() {
           {isLocked && (
             <div className="mb-6 p-4 rounded-lg bg-amber-500/10 border-l-4 border-amber-500 flex items-start gap-3 fade-in zoom-in duration-300 animate-in">
               <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm font-bold text-amber-500">Authentication Blocked</p>
-                <p className="text-[13px] font-medium text-amber-500/80 mt-0.5">{errorMsg}</p>
+              <div className="flex-1">
+                <div className="flex justify-between items-center">
+                  <p className="text-sm font-bold text-amber-500">Authentication Blocked</p>
+                  <span className="text-xs font-mono font-bold bg-amber-500/20 px-2 py-0.5 rounded text-amber-500 animate-pulse">
+                    {formatLockTime(lockTimeLeft)}
+                  </span>
+                </div>
+                <p className="text-[13px] font-medium text-amber-500/80 mt-0.5">Too many failed attempts. Security lock engaged.</p>
               </div>
             </div>
           )}

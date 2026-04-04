@@ -1,13 +1,4 @@
-import {
-  Horizon,
-  Networks,
-  TransactionBuilder,
-  Operation,
-  Asset,
-  Memo,
-  BASE_FEE,
-  Transaction,
-} from "stellar-sdk";
+import * as StellarSdk from "stellar-sdk";
 import {
   requestAccess,
   signTransaction,
@@ -19,7 +10,7 @@ import {
  * ────────────────────────────────────────────── */
 
 const HORIZON_TESTNET_URL = "https://horizon-testnet.stellar.org";
-const NETWORK_PASSPHRASE = Networks.TESTNET;
+const NETWORK_PASSPHRASE = StellarSdk.Networks.TESTNET;
 
 /* ──────────────────────────────────────────────
  *  1. Connect to Stellar Testnet
@@ -28,8 +19,8 @@ const NETWORK_PASSPHRASE = Networks.TESTNET;
 /**
  * Returns a Horizon server instance pointed at the Stellar **Testnet**.
  */
-export function getServer(): Horizon.Server {
-  return new Horizon.Server(HORIZON_TESTNET_URL);
+export function getServer(): StellarSdk.Horizon.Server {
+  return new StellarSdk.Horizon.Server(HORIZON_TESTNET_URL);
 }
 
 /* ──────────────────────────────────────────────
@@ -74,13 +65,14 @@ export async function connectWallet(): Promise<string> {
 export async function getWalletBalance(address: string): Promise<string | null> {
   try {
     const res = await fetch(`${HORIZON_TESTNET_URL}/accounts/${address}`);
+    if (res.status === 404) return "0.00";
     if (!res.ok) return null;
     const data = await res.json();
     const xlm = data.balances?.find((b: any) => b.asset_type === "native");
     return xlm ? parseFloat(xlm.balance).toFixed(2) : "0.00";
   } catch (err) {
     console.error("Balance fetch error:", err);
-    return null;
+    return "0.00"; // Fallback to 0.00 for resilient UI
   }
 }
 
@@ -114,7 +106,7 @@ export async function buildPaymentTransaction({
   destinationPublicKey,
   amount,
   memo,
-}: PaymentParams): Promise<Transaction> {
+}: PaymentParams): Promise<StellarSdk.Transaction> {
   const server = getServer();
 
   // Load the source account so we get the current sequence number
@@ -126,30 +118,30 @@ export async function buildPaymentTransaction({
     const fetchedFee = await server.fetchBaseFee();
     fee = String(fetchedFee);
   } catch {
-    fee = BASE_FEE; // 100 stroops
+    fee = StellarSdk.BASE_FEE; // 100 stroops
   }
 
   // Build the transaction
-  let builder = new TransactionBuilder(sourceAccount, {
+  let builder = new StellarSdk.TransactionBuilder(sourceAccount, {
     fee,
     networkPassphrase: NETWORK_PASSPHRASE,
   }).addOperation(
-    Operation.payment({
+    StellarSdk.Operation.payment({
       destination: destinationPublicKey,
-      asset: Asset.native(),
+      asset: StellarSdk.Asset.native(),
       amount, // e.g. "100.0000000"
     })
   );
 
   // Attach a text memo if provided
   if (memo) {
-    builder = builder.addMemo(Memo.text(memo));
+    builder = builder.addMemo(StellarSdk.Memo.text(memo));
   }
 
   // Set a 180‑second validity window & build
   const transaction = builder.setTimeout(180).build();
 
-  return transaction as unknown as Transaction;
+  return transaction as unknown as StellarSdk.Transaction;
 }
 
 /* ──────────────────────────────────────────────
@@ -198,13 +190,13 @@ export async function submitPaymentViaFreighter(
 
     // 4. Re-hydrate the signed XDR and submit
     const server = getServer();
-    const signedTx = TransactionBuilder.fromXDR(
+    const signedTx = StellarSdk.TransactionBuilder.fromXDR(
       signResult.signedTxXdr,
       NETWORK_PASSPHRASE
     );
 
     const response = await server.submitTransaction(
-      signedTx as unknown as Transaction
+      signedTx as unknown as StellarSdk.Transaction
     );
 
     return {
@@ -239,7 +231,7 @@ export interface DisburseResult {
   error?: string;
 }
 
-export const TESTNET_USDC_ASSET = new Asset(
+export const TESTNET_USDC_ASSET = new StellarSdk.Asset(
   "USDC",
   "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
 );
@@ -283,24 +275,24 @@ export async function bulkDisburse(
     const memo = `PAYSLIP-${monthAbbr}-${year}`;
 
     // ── 4. Build transaction with one payment op per employee ──
-    let builder = new TransactionBuilder(sourceAccount, {
-      fee: BASE_FEE,
+    let builder = new StellarSdk.TransactionBuilder(sourceAccount, {
+      fee: StellarSdk.BASE_FEE,
       networkPassphrase: NETWORK_PASSPHRASE,
     });
 
-    const paymentAsset = assetType === "USDC" ? TESTNET_USDC_ASSET : Asset.native();
+    const paymentAsset = assetType === "USDC" ? TESTNET_USDC_ASSET : StellarSdk.Asset.native();
 
     for (const entry of entries) {
       builder = builder.addOperation(
-        Operation.payment({
+        StellarSdk.Operation.payment({
           destination: entry.destination,
           asset: paymentAsset,
           amount: entry.amount,
         })
-      ) as unknown as TransactionBuilder;
+      ) as unknown as StellarSdk.TransactionBuilder;
     }
 
-    builder = builder.addMemo(Memo.text(memo)) as unknown as TransactionBuilder;
+    builder = builder.addMemo(StellarSdk.Memo.text(memo)) as unknown as StellarSdk.TransactionBuilder;
     const transaction = builder.setTimeout(300).build();
 
     // ── 5. Sign via Freighter ──
@@ -320,13 +312,13 @@ export async function bulkDisburse(
     }
 
     // ── 6. Submit the signed transaction ──
-    const signedTx = TransactionBuilder.fromXDR(
+    const signedTx = StellarSdk.TransactionBuilder.fromXDR(
       signResult.signedTxXdr,
       NETWORK_PASSPHRASE
     );
 
     const response = await server.submitTransaction(
-      signedTx as unknown as Transaction
+      signedTx as unknown as StellarSdk.Transaction
     );
 
     const txHash = (response as { hash: string }).hash;
