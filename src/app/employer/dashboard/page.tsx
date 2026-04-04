@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useEffect, useMemo } from "react";
 import { useOrg } from "@/lib/context/OrgContext";
 import Image from "next/image";

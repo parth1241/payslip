@@ -15,7 +15,7 @@ export async function checkOrgAccess(
       return { allowed: true, userRole: "owner" };
     }
 
-    const member = org.members.find((m: any) => m.userId.toString() === userId);
+    const member = org.members.find((m: unknown) => (m as any).userId.toString() === userId);
     if (!member) {
       return { allowed: false, reason: "not a member" };
     }
@@ -26,12 +26,12 @@ export async function checkOrgAccess(
       owner: 2,
     };
 
-    if (levels[member.role as keyof typeof levels] >= levels[required]) {
-      return { allowed: true, userRole: member.role };
+    if (levels[(member as any).role as keyof typeof levels] >= levels[required]) {
+      return { allowed: true, userRole: (member as any).role };
     }
 
     return { allowed: false, reason: "insufficient role" };
-  } catch (err) {
+  } catch (_err) {
     return { allowed: false, reason: "server error" };
   }
 }

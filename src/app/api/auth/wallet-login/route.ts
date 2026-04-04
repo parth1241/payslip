@@ -17,7 +17,8 @@ export async function POST(req: Request) {
     }
 
     // Explicitly generate a temporary token specifically evaluating immediate injection
-    const secret = process.env.NEXTAUTH_SECRET || "default_local_secret";
+    const secret = process.env.NEXTAUTH_SECRET;
+    if (!secret) throw new Error("NEXTAUTH_SECRET not configured");
     const walletToken = jwt.sign({ userId: user._id.toString() }, secret, { expiresIn: '5m' });
 
     return NextResponse.json({ email: user.email, token: walletToken });

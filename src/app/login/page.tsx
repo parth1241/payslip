@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { requestAccess } from "@stellar/freighter-api";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { status, data: session } = useSession();
@@ -91,7 +91,7 @@ export default function LoginPage() {
       } else if (result?.ok) {
         addToast("Signed in successfully", "success");
       }
-    } catch (err) {
+    } catch (_err) {
       addToast("Network execution error", "error");
     } finally {
       setIsSubmitting(false);
@@ -135,7 +135,7 @@ export default function LoginPage() {
       } else {
         addToast("Signed in securely!", "success");
       }
-    } catch (err) {
+    } catch (_err) {
       addToast("Freighter not installed or mapping failed", "error");
     } finally {
       setIsSubmitting(false);
@@ -318,5 +318,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }

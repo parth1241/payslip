@@ -1,15 +1,17 @@
 import { getServerSession } from "next-auth";
+export const dynamic = 'force-dynamic';
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectDB from "@/lib/db";
 import { Invite } from "@/lib/models/Invite";
 import { Organisation } from "@/lib/models/Organisation";
 import ClientApprove from "./ClientApprove";
 
-export default async function InvitePage({ params }: { params: { token: string } }) {
+export default async function InvitePage({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = await params;
   const session = await getServerSession(authOptions);
   
   await connectDB();
-  const invite = await Invite.findOne({ token: params.token, status: "pending" });
+  const invite = await Invite.findOne({ token, status: "pending" });
   
   if (!invite || invite.expiresAt < new Date()) {
     return (
@@ -30,7 +32,7 @@ export default async function InvitePage({ params }: { params: { token: string }
 
   return (
     <ClientApprove 
-      token={params.token} 
+      token={token} 
       requiresLogin={!session} 
       orgName={orgName} 
       role={invite.role} 

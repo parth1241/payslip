@@ -1,5 +1,5 @@
 import type { DefaultSession } from "next-auth";
-import type { JWT as _JWT } from "next-auth/jwt";
+
 
 declare module "next-auth" {
   interface Session {
@@ -10,6 +10,7 @@ declare module "next-auth" {
       lastLogin?: Date;
       orgName?: string;
       rememberMe?: boolean;
+      avatarColor?: string;
     } & DefaultSession["user"];
   }
 
@@ -20,6 +21,7 @@ declare module "next-auth" {
     lastLogin?: Date;
     orgName?: string;
     rememberMe?: boolean;
+    avatarColor?: string;
   }
 }
 
@@ -31,6 +33,7 @@ declare module "next-auth/jwt" {
     lastLogin?: Date;
     orgName?: string;
     rememberMe?: boolean;
+    avatarColor?: string;
     exp?: number;
   }
 }

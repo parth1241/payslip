@@ -1,10 +1,12 @@
 import connectDB from "@/lib/db";
+export const dynamic = 'force-dynamic';
 import { User } from "@/lib/models/User";
 import JoinClientFlow from "./JoinClientFlow";
 
-export default async function JoinPage({ params }: { params: { token: string } }) {
+export default async function JoinPage({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = await params;
   await connectDB();
-  const user = await User.findOne({ joinToken: params.token });
+  const user = await User.findOne({ joinToken: token });
   
   if (!user) {
     return (
@@ -22,7 +24,7 @@ export default async function JoinPage({ params }: { params: { token: string } }
 
   return (
     <JoinClientFlow 
-      token={params.token} 
+      token={token} 
       name={user.name} 
       email={user.email} 
     />

@@ -9,7 +9,7 @@ interface CurrencyState {
   refreshRate: () => Promise<void>;
 }
 
-export const useCurrencyStore = create<CurrencyState>((set, get) => ({
+export const useCurrencyStore = create<CurrencyState>((set) => ({
   currency: "XLM",
   xlmUsdRate: 0.11, // fallback default
   lastUpdated: null,

@@ -31,7 +31,9 @@ export function OrgProvider({ children }: { children: ReactNode }) {
   const [orgs, setOrgs] = useState<Org[]>([]);
   
   // Synchronous read to eliminate UI flash on hard reload
-  const initialOrgId = typeof window !== 'undefined' ? localStorage.getItem("ps_active_org") : null;
+  if (typeof window !== 'undefined') {
+    localStorage.getItem("ps_active_org");
+  }
   const [activeOrg, setActiveOrg] = useState<Org | null>(null);
   
   const [loading, setLoading] = useState(true);

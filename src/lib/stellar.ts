@@ -68,7 +68,7 @@ export async function getWalletBalance(address: string): Promise<string | null> 
     if (res.status === 404) return "0.00";
     if (!res.ok) return null;
     const data = await res.json();
-    const xlm = data.balances?.find((b: any) => b.asset_type === "native");
+    const xlm = data.balances?.find((b: { asset_type: string; balance: string }) => b.asset_type === "native");
     return xlm ? parseFloat(xlm.balance).toFixed(2) : "0.00";
   } catch (err) {
     console.error("Balance fetch error:", err);

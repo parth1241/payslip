@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Loader2, Check, X, Pencil, Mail, Shield, Bell, Trash2, AlertTriangle } from "lucide-react";
-import { addToast } from "@/contexts/ToastContext"; // assume toast context export
+import { useToast } from "@/contexts/ToastContext";
 
 // Simple color picker component
 function ColorPicker({ current, onSelect }: { current: string; onSelect: (color: string) => void }) {
@@ -29,6 +29,7 @@ function ColorPicker({ current, onSelect }: { current: string; onSelect: (color:
 export default function AccountSettings() {
   const { data: session, update } = useSession();
   const router = useRouter();
+  const { addToast } = useToast();
 
   const [activeSection, setActiveSection] = useState<"profile" | "security" | "notifications" | "danger">("profile");
 

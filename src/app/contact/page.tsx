@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import PageLayout from '@/components/PageLayout'
-import { Mail, MessageSquare, Twitter, Globe, CheckCircle, Send, ArrowRight, MapPin } from 'lucide-react'
+import { Mail, MessageSquare, Globe, CheckCircle, Send, ArrowRight, MapPin } from 'lucide-react'
 
 export default function ContactPage() {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle')
@@ -179,7 +179,7 @@ export default function ContactPage() {
               <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-sky-500/30 transition-all group flex flex-col gap-4">
                 <div className="flex items-start gap-5">
                   <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Twitter className="h-6 w-6 text-sky-400" />
+                    <Globe className="h-6 w-6 text-sky-400" />
                   </div>
                   <div>
                     <h3 className="text-lg font-bold mb-1">Follow us</h3>

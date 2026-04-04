@@ -13,7 +13,7 @@ export async function fetchXLMPrice(): Promise<number> {
       if (Date.now() - cached.timestamp < CACHE_DURATION_MS) {
         return cached.price;
       }
-    } catch (e) {
+    } catch {
       // invalid cache formatting
     }
   }
@@ -41,7 +41,7 @@ export async function fetchXLMPrice(): Promise<number> {
       try {
         const cached = JSON.parse(cachedStr);
         return cached.price;
-      } catch (e) {}
+      } catch {}
     }
     
     return FALLBACK_PRICE;
@@ -59,7 +59,7 @@ export async function fetchXLMHistory(): Promise<{ timestamp: number; price: num
       if (Date.now() - cached.timestamp < 300000) {
         return cached.history;
       }
-    } catch (e) {}
+    } catch {}
   }
 
   try {
