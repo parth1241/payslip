@@ -5,6 +5,10 @@
 ## Live Demo
 🔗 https://payslip.vercel.app (update this after deploying)
 
+![PaySlip Dashboard Mockup](file:///Users/parthkaran/Documents/claude_projects/payslip/public/payslip_dashboard.png)
+
+![PaySlip Digital Receipt](file:///Users/parthkaran/Documents/claude_projects/payslip/public/payslip_receipt.png)
+
 ## What it does
 PaySlip lets employers pay their teams in XLM or USDC directly on the Stellar network. Every payment is recorded on-chain, creating a permanent verifiable payslip. Employees receive salaries to any Stellar wallet address — no bank account required.
 

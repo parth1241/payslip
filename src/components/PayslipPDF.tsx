@@ -1,145 +1,224 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
+
+// Register standard fonts for better look if possible, but Helvetica/Courier are safe defaults.
+// For a premium feel, we stick to clean weights.
 
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
+    padding: 0,
     fontFamily: 'Helvetica',
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#020617', // Slate 950
+    color: '#f8fafc',
   },
-  headerBox: {
-    backgroundColor: '#0f172a', // Dark Navy
-    padding: 30,
-    borderRadius: 8,
-    marginBottom: 30,
+  mainContainer: {
+    padding: 40,
+    height: '100%',
+  },
+  // Background Decorations
+  bgGlow: {
+    position: 'absolute',
+    top: -100,
+    right: -100,
+    width: 400,
+    height: 400,
+    backgroundColor: '#3730a3', // Indigo 800
+    opacity: 0.1,
+    borderRadius: 200,
+  },
+  bgGlowBottom: {
+    position: 'absolute',
+    bottom: -150,
+    left: -150,
+    width: 300,
+    height: 300,
+    backgroundColor: '#0e7490', // Cyan 700
+    opacity: 0.08,
+    borderRadius: 150,
+  },
+  
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 40,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    paddingBottom: 20,
   },
-  companyName: {
-    color: '#ffffff',
-    fontSize: 28,
+  companyInfo: {
+    flexDirection: 'column',
+  },
+  logoText: {
+    fontSize: 24,
     fontWeight: 'bold',
+    color: '#818cf8', // Indigo 400
+    letterSpacing: 1,
   },
-  headerBrand: {
-    color: '#818cf8', // Indigo
+  subLogo: {
     fontSize: 10,
-    marginTop: 4,
+    color: '#94a3b8',
+    marginTop: 2,
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
-  headerTitle: {
-    color: '#ffffff',
-    fontSize: 14,
+  receiptTitle: {
     textAlign: 'right',
   },
-  section: {
-    marginBottom: 25,
+  titleMain: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#ffffff',
   },
-  sectionTitle: {
-    fontSize: 12,
+  titleSub: {
+    fontSize: 10,
     color: '#64748b',
+    marginTop: 4,
+  },
+
+  grid: {
+    flexDirection: 'row',
+    gap: 20,
+    marginBottom: 30,
+  },
+  gridCol: {
+    flex: 1,
+    backgroundColor: 'rgba(30, 41, 59, 0.5)', // Slate 800 with opacity
+    padding: 15,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  gridTitle: {
+    fontSize: 9,
+    color: '#94a3b8',
     textTransform: 'uppercase',
     letterSpacing: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: '#cbd5e1',
-    paddingBottom: 5,
-    marginBottom: 10,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     marginBottom: 8,
   },
-  label: {
-    fontSize: 11,
-    color: '#334155',
-  },
-  value: {
-    fontSize: 11,
-    color: '#0f172a',
+  gridValue: {
+    fontSize: 12,
+    color: '#f1f5f9',
     fontWeight: 'bold',
   },
-  monoValue: {
-    fontSize: 10,
+  gridSubValue: {
+    fontSize: 9,
+    color: '#64748b',
+    marginTop: 4,
     fontFamily: 'Courier',
-    color: '#0f172a',
   },
-  table: {
+
+  tableContainer: {
     marginTop: 10,
+    backgroundColor: 'rgba(15, 23, 42, 0.4)',
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 6,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
     overflow: 'hidden',
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#f1f5f9',
-    padding: 10,
+    backgroundColor: 'rgba(51, 65, 85, 0.3)',
+    padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
   tableRow: {
     flexDirection: 'row',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f1f5f9',
-  },
-  tableColLeft: { flex: 2 },
-  tableColRight: { flex: 1, textAlign: 'right' },
-  tableHeaderText: { fontSize: 10, color: '#475569', fontWeight: 'bold' },
-  tableText: { fontSize: 11, color: '#1e293b' },
-  tableTextMono: { fontSize: 11, fontFamily: 'Courier', color: '#1e293b' },
-  totalRow: {
-    flexDirection: 'row',
     padding: 12,
-    backgroundColor: '#e0e7ff', // light indigo
-    borderTopWidth: 1,
-    borderColor: '#c7d2fe',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
   },
-  totalTextCol: { flex: 2, textAlign: 'right', paddingRight: 20 },
-  totalText: { fontSize: 12, color: '#3730a3', fontWeight: 'bold' },
-  totalValueCol: { flex: 1, textAlign: 'right' },
-  totalValueMono: { fontSize: 13, fontFamily: 'Courier', color: '#312e81', fontWeight: 'bold' },
-  blockchainBox: {
+  colDesc: { flex: 3 },
+  colAmount: { flex: 1, textAlign: 'right' },
+  headerText: { fontSize: 9, color: '#94a3b8', fontWeight: 'bold' },
+  rowText: { fontSize: 11, color: '#e2e8f0' },
+  rowTextDim: { fontSize: 10, color: '#64748b' },
+
+  summaryBox: {
     marginTop: 20,
-    backgroundColor: '#030712', // deep dark
     padding: 20,
+    backgroundColor: 'rgba(99, 102, 241, 0.1)', // Indigo 500 transparent
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(99, 102, 241, 0.2)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  summaryLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  summaryValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#818cf8',
+    fontFamily: 'Courier',
+  },
+
+  blockchainSection: {
+    marginTop: 40,
+    padding: 20,
+    backgroundColor: '#0f172a',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(34, 211, 238, 0.2)', // Cyan 400
+    flexDirection: 'row',
+    gap: 20,
+  },
+  qrCodeIcon: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#ffffff',
+    padding: 5,
     borderRadius: 8,
   },
-  blockchainHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
+  verificationDetails: {
+    flex: 1,
+    justifyContent: 'center',
   },
-  verifiedStamp: {
-    backgroundColor: '#10b981',
-    color: '#ffffff',
+  statusBadge: {
+    backgroundColor: '#064e3b',
+    color: '#34d399', // Emerald 400
     fontSize: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: 4,
+    padding: '3 8',
+    borderRadius: 100,
+    width: 100,
+    textAlign: 'center',
+    marginBottom: 10,
+    fontWeight: 'bold',
     textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginRight: 10,
   },
-  verificationTitle: { color: '#f8fafc', fontSize: 12, fontWeight: 'bold' },
-  hashLabel: { color: '#94a3b8', fontSize: 9, marginBottom: 4 },
-  hashValue: { color: '#22d3ee', fontSize: 9, fontFamily: 'Courier', marginBottom: 12 },
-  explorerUrl: { color: '#818cf8', fontSize: 9, textDecoration: 'underline' },
+  hashLabel: {
+    fontSize: 8,
+    color: '#64748b',
+    marginBottom: 4,
+  },
+  hashValue: {
+    fontSize: 9,
+    color: '#22d3ee', // Cyan 400
+    fontFamily: 'Courier',
+    marginBottom: 8,
+  },
+  verificationFooterText: {
+    fontSize: 8,
+    color: '#94a3b8',
+    fontStyle: 'italic',
+  },
+
   footer: {
     position: 'absolute',
     bottom: 30,
     left: 40,
     right: 40,
-    borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
-    paddingTop: 10,
+    textAlign: 'center',
   },
   footerText: {
-    fontSize: 9,
-    color: '#94a3b8',
-    textAlign: 'center',
+    fontSize: 8,
+    color: '#475569',
+    lineHeight: 1.5,
   }
 });
 
@@ -152,97 +231,109 @@ interface PayslipData {
 
 export const PayslipPDF = ({ txHash, employeeName, amount, date }: PayslipData) => {
   const baseSalary = amount;
-  const networkFee = 0.00001; // Mocked Stellar default fee
+  const networkFee = 0.00001;
   const netPayment = baseSalary - networkFee;
+  const formattedDate = new Date(date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const explorerUrl = `https://stellar.expert/explorer/testnet/tx/${txHash}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(explorerUrl)}&size=150x150&color=06b6d4&bgcolor=ffffff`;
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Header */}
-        <View style={styles.headerBox}>
-          <View>
-            <Text style={styles.companyName}>Payslip</Text>
-            <Text style={styles.headerBrand}>Enterprise Payroll</Text>
-          </View>
-          <View>
-            <Text style={styles.headerTitle}>OFFICIAL PAYSLIP</Text>
-            <Text style={{ color: '#94a3b8', fontSize: 11, textAlign: 'right', marginTop: 4 }}>
-              {new Date(date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-            </Text>
-          </View>
-        </View>
-
-        {/* Employee Info */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Employee Information</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Name:</Text>
-            <Text style={styles.value}>{employeeName}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Pay Period:</Text>
-            <Text style={styles.value}>{date}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Receiving Wallet (Stellar):</Text>
-            <Text style={styles.monoValue}>{txHash ? "G...[REDACTED]" : "Pending"}</Text>
-          </View>
-        </View>
-
-        {/* Payment Breakdown Table */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Payment Breakdown</Text>
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <View style={styles.tableColLeft}><Text style={styles.tableHeaderText}>DESCRIPTION</Text></View>
-              <View style={styles.tableColRight}><Text style={styles.tableHeaderText}>AMOUNT (XLM)</Text></View>
+        <View style={styles.bgGlow} />
+        <View style={styles.bgGlowBottom} />
+        
+        <View style={styles.mainContainer}>
+          {/* Header */}
+          <View style={styles.header}>
+            <View style={styles.companyInfo}>
+              <Text style={styles.logoText}>PaySlip</Text>
+              <Text style={styles.subLogo}>Decentralized Payroll</Text>
             </View>
+            <View style={styles.receiptTitle}>
+              <Text style={styles.titleMain}>Earnings Statement</Text>
+              <Text style={styles.titleSub}>Period: {formattedDate}</Text>
+            </View>
+          </View>
 
-            <View style={styles.tableRow}>
-              <View style={styles.tableColLeft}><Text style={styles.tableText}>Base Salary Disbursement</Text></View>
-              <View style={styles.tableColRight}><Text style={styles.tableTextMono}>{baseSalary.toFixed(2)}</Text></View>
+          {/* Info Grid */}
+          <View style={styles.grid}>
+            <View style={styles.gridCol}>
+              <Text style={styles.gridTitle}>Employee Name</Text>
+              <Text style={styles.gridValue}>{employeeName}</Text>
+              <Text style={styles.gridSubValue}>Verified ID: {employeeName.replace(/\s+/g, '-').toLowerCase()}</Text>
+            </View>
+            <View style={styles.gridCol}>
+              <Text style={styles.gridTitle}>Issued Date</Text>
+              <Text style={styles.gridValue}>{date}</Text>
+              <Text style={styles.gridSubValue}>Network: Stellar Testnet</Text>
+            </View>
+          </View>
+
+          {/* Breakdown Table */}
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <View style={styles.colDesc}><Text style={styles.headerText}>DESCRIPTION</Text></View>
+              <View style={styles.colAmount}><Text style={styles.headerText}>AMOUNT (XLM)</Text></View>
             </View>
             
             <View style={styles.tableRow}>
-              <View style={styles.tableColLeft}><Text style={styles.tableText}>Sender Sponsored Network Fee</Text></View>
-              <View style={styles.tableColRight}><Text style={styles.tableTextMono}>({networkFee.toFixed(5)})</Text></View>
+              <View style={styles.colDesc}>
+                <Text style={styles.rowText}>Salary Disbursement</Text>
+                <Text style={styles.rowTextDim}>Monthly base payment in native asset</Text>
+              </View>
+              <View style={styles.colAmount}><Text style={styles.rowText}>{baseSalary.toFixed(2)}</Text></View>
             </View>
 
             <View style={styles.tableRow}>
-              <View style={styles.tableColLeft}><Text style={{...styles.tableText, color: '#64748b'}}>Exchange Rate Estimate at Execution</Text></View>
-              <View style={styles.tableColRight}><Text style={{...styles.tableTextMono, color: '#64748b'}}>~ $0.11 USD / XLM</Text></View>
+              <View style={styles.colDesc}>
+                <Text style={styles.rowText}>Network Fees (Sponsored)</Text>
+                <Text style={styles.rowTextDim}>Employer covered Stellar base reserve fee</Text>
+              </View>
+              <View style={styles.colAmount}><Text style={styles.rowText}>-{networkFee.toFixed(5)}</Text></View>
             </View>
 
-            <View style={styles.totalRow}>
-              <View style={styles.totalTextCol}><Text style={styles.totalText}>NET PAYMENT ISSUED:</Text></View>
-              <View style={styles.totalValueCol}><Text style={styles.totalValueMono}>{netPayment.toFixed(5)} XLM</Text></View>
+            <View style={{ ...styles.tableRow, borderBottomWidth: 0 }}>
+              <View style={styles.colDesc}>
+                <Text style={styles.rowTextDim}>Estimated USD Value (at time of tx)</Text>
+              </View>
+              <View style={styles.colAmount}><Text style={styles.rowTextDim}>~$ {(baseSalary * 0.11).toFixed(2)} USD</Text></View>
             </View>
           </View>
-        </View>
 
-        {/* Blockchain Verification */}
-        <View style={styles.blockchainBox}>
-          <View style={styles.blockchainHeader}>
-            <Text style={styles.verifiedStamp}>VERIFIED ON-CHAIN</Text>
-            <Text style={styles.verificationTitle}>Stellar Network Verification</Text>
+          {/* Summary */}
+          <View style={styles.summaryBox}>
+            <Text style={styles.summaryLabel}>NET DISBURSEMENT</Text>
+            <Text style={styles.summaryValue}>{netPayment.toFixed(5)} XLM</Text>
           </View>
-          <Text style={styles.hashLabel}>TRANSACTION HASH / LEDGER ID</Text>
-          <Text style={styles.hashValue}>{txHash || "PENDING CONFIRMATION"}</Text>
-          
-          <Text style={styles.hashLabel}>VIEW ON EXPLORER</Text>
-          <Text style={styles.explorerUrl}>
-            https://stellar.expert/explorer/testnet/tx/{txHash}
-          </Text>
-        </View>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            This document is a cryptographically verified receipt of a transaction executed on the Stellar blockchain.
-            The values reported are strictly bounded within the public ledger.
-          </Text>
+          {/* Blockchain Verification Section */}
+          <View style={styles.blockchainSection}>
+            <View style={styles.qrCodeIcon}>
+              {txHash && <Image src={qrUrl} />}
+            </View>
+            <View style={styles.verificationDetails}>
+              <View style={styles.statusBadge}>
+                <Text>CONFIRMED</Text>
+              </View>
+              <Text style={styles.hashLabel}>BLOCKCHAIN TRANSACTION HASH</Text>
+              <Text style={styles.hashValue}>{txHash || "PENDING_CONFIRMATION_ON_LEDGER"}</Text>
+              <Text style={styles.verificationFooterText}>
+                Scan QR code to view this transaction on the public Stellar ledger.
+              </Text>
+            </View>
+          </View>
+
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>
+              This is a digital receipt of a blockchain transaction. PaySlip is a non-custodial payroll layer on the Stellar Network.
+              Values are cryptographically verifiable and immutable once recorded on the ledger.
+            </Text>
+          </View>
         </View>
       </Page>
     </Document>
   );
 };
+

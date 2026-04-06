@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Loader2, Check, ExternalLink, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Confetti } from "@/components/Confetti";
+import { PayslipPDF } from "./PayslipPDF";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 interface Employee {
   name: string;
@@ -317,33 +319,63 @@ export function PayrollTracker({
                   ) : null}
                 </div>
               </div>
-              <div className="text-right flex flex-col items-end">
-                <p className="font-mono font-semibold text-foreground">
-                  {emp.salary}
-                  <span className="text-[10px] text-muted-foreground ml-1">
-                    XLM
-                  </span>
-                </p>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  {isConfirmed ? (
-                    <Check className="h-3 w-3 text-emerald-400" />
-                  ) : isProcessing ? (
-                    <Loader2 className="h-3 w-3 text-primary animate-spin" />
-                  ) : (
-                    <ShieldCheck className="h-3 w-3 text-slate-500" />
-                  )}
-                  <span
-                    className={`text-[10.5px] font-medium uppercase tracking-wider ${
-                      isConfirmed
-                        ? "text-emerald-400"
-                        : isProcessing
-                        ? "text-primary"
-                        : "text-slate-500"
-                    }`}
-                  >
-                    {rowStatus}
-                  </span>
+              <div className="text-right flex items-center gap-4">
+                <div className="flex flex-col items-end">
+                  <p className="font-mono font-semibold text-foreground">
+                    {emp.salary}
+                    <span className="text-[10px] text-muted-foreground ml-1">
+                      XLM
+                    </span>
+                  </p>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    {isConfirmed ? (
+                      <Check className="h-3 w-3 text-emerald-400" />
+                    ) : isProcessing ? (
+                      <Loader2 className="h-3 w-3 text-primary animate-spin" />
+                    ) : (
+                      <ShieldCheck className="h-3 w-3 text-slate-500" />
+                    )}
+                    <span
+                      className={`text-[10.5px] font-medium uppercase tracking-wider ${
+                        isConfirmed
+                          ? "text-emerald-400"
+                          : isProcessing
+                          ? "text-primary"
+                          : "text-slate-500"
+                      }`}
+                    >
+                      {rowStatus}
+                    </span>
+                  </div>
                 </div>
+                {isConfirmed && txHash && (
+                  <PDFDownloadLink
+                    document={
+                      <PayslipPDF
+                        txHash={txHash}
+                        employeeName={emp.name}
+                        amount={parseFloat(emp.salary)}
+                        date={new Date().toLocaleDateString()}
+                      />
+                    }
+                    fileName={`Payslip_${emp.name.replace(/\s+/g, "_")}.pdf`}
+                  >
+                    {({ loading }) => (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 text-emerald-400 hover:bg-emerald-500/20"
+                        title="Download Payslip"
+                      >
+                        {loading ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        )}
+                      </Button>
+                    )}
+                  </PDFDownloadLink>
+                )}
               </div>
             </div>
           );

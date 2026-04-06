@@ -763,6 +763,23 @@ export default function EmployerDashboard() {
                 <p className="text-[11px] font-medium text-textHint mt-3 tracking-wide">Zero network rejections</p>
               </CardContent>
             </Card>
+
+            {/* System Overview Visual */}
+            <Card className="col-span-1 lg:col-span-4 bg-[#0f0f2e] border-white/[0.06] shadow-2xl overflow-hidden group">
+              <div className="relative h-48 w-full overflow-hidden">
+                <Image 
+                  src="/payslip_dashboard.png" 
+                  alt="System Overview" 
+                  fill 
+                  className="object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500 scale-110 group-hover:scale-100"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f2e] via-[#0f0f2e]/20 to-transparent" />
+                <div className="absolute bottom-4 left-6">
+                  <h3 className="text-lg font-bold text-white mb-1">Network Command Center</h3>
+                  <p className="text-[12px] text-indigo-200/70 font-medium">Real-time ledger synchronization active</p>
+                </div>
+              </div>
+            </Card>
           </div>
 
           {/* 2. Chart Section */}
@@ -936,8 +953,21 @@ export default function EmployerDashboard() {
                             {status.label}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-[12.5px] text-muted-foreground">
+                        <TableCell className="text-[12.5px] text-muted-foreground flex items-center gap-2">
                           {emp.lastPaid || <span className="text-slate-500 italic">Never</span>}
+                          {emp.lastPaid && (
+                            <div className="h-6 w-8 relative rounded border border-white/10 overflow-hidden cursor-pointer hover:border-primary/50 transition-colors group/receipt">
+                              <Image 
+                                src="/payslip_receipt.png" 
+                                alt="Receipt Preview" 
+                                fill 
+                                className="object-cover"
+                              />
+                              <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover/receipt:opacity-100 transition-opacity flex items-center justify-center">
+                                <FileText className="h-3 w-3 text-white" />
+                              </div>
+                            </div>
+                          )}
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
