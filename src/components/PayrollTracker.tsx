@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Confetti } from "@/components/Confetti";
 import { PayslipPDF } from "./PayslipPDF";
 import { PDFDownloadLink } from "@react-pdf/renderer";
+import TransactionSuccessCard from "./shared/TransactionSuccessCard";
+import { getWalletBalance } from "@/lib/stellar";
+import { isConnected, getAddress } from "@stellar/freighter-api";
 
 interface Employee {
   name: string;
@@ -33,6 +36,8 @@ export function PayrollTracker({
   const [networkConfirmed, setNetworkConfirmed] = useState(false);
   const [startTime] = useState(Date.now());
   const [timeTaken, setTimeTaken] = useState(0);
+  const [updatedBalance, setUpdatedBalance] = useState("0.00");
+  const [walletAddr, setWalletAddr] = useState("");
 
   // Ensure timer ticks up while we are processing
   useEffect(() => {
@@ -118,6 +123,24 @@ export function PayrollTracker({
     }
   }, [networkConfirmed, confirmedCount, employees.length]);
 
+  // Fetch balance on completion
+  useEffect(() => {
+    if (networkConfirmed && confirmedCount === employees.length) {
+      const fetchData = async () => {
+        if (await isConnected()) {
+          const res = await getAddress();
+          const addr = typeof res === 'object' && 'address' in res ? res.address : res;
+          if (addr) {
+            setWalletAddr(addr as string);
+            const bal = await getWalletBalance(addr as string);
+            setUpdatedBalance(bal || "0.00");
+          }
+        }
+      };
+      fetchData();
+    }
+  }, [networkConfirmed, confirmedCount, employees.length]);
+
   const allCompleted = networkConfirmed && confirmedCount === employees.length;
 
   // Render variables
@@ -126,65 +149,20 @@ export function PayrollTracker({
 
   if (allCompleted) {
     return (
-      <div className="flex flex-col items-center justify-center py-10 px-4 text-center animate-in fade-in zoom-in duration-500">
-        <Confetti />
-        <div className="absolute inset-x-0 -top-24 -bottom-24 bg-gradient-to-b from-primary/10 via-transparent to-transparent opacity-50 blur-xl block pointer-events-none" />
-        
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mb-6 shadow-[0_0_40px_rgba(16,185,129,0.3)]">
-          <Check className="h-8 w-8" />
-        </div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">
-          Payroll Complete!
-        </h2>
-        <p className="text-muted-foreground text-[14px]">
-          Successfully executed on the Stellar blockchain.
-        </p>
-
-        <div className="mt-8 mb-8 grid grid-cols-3 gap-4 w-full">
-          <div className="p-4 bg-muted/40 rounded-lg border border-border/40">
-            <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mb-1">
-              Total Sent
-            </p>
-            <p className="font-mono text-[16px] font-bold text-foreground">
-              {totalAmount.toFixed(2)}
-            </p>
-          </div>
-          <div className="p-4 bg-muted/40 rounded-lg border border-border/40">
-            <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mb-1">
-              Network Fee
-            </p>
-            <p className="font-mono text-[16px] font-bold text-foreground">
-              {networkFeeEst.toFixed(5)}
-            </p>
-          </div>
-          <div className="p-4 bg-muted/40 rounded-lg border border-border/40">
-            <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mb-1">
-              Final Time
-            </p>
-            <p className="font-mono text-[16px] font-bold text-foreground">
-              {timeTaken}s
-            </p>
-          </div>
-        </div>
-
-        <a
-          href={`https://stellar.expert/explorer/testnet/tx/${txHash}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Button
-            variant="outline"
-            className="w-full gap-2 border-primary/40 hover:bg-primary/10"
-          >
-            View all on Stellar Expert
-            <ExternalLink className="h-4 w-4" />
-          </Button>
-        </a>
-
-        <Button className="w-full mt-3" onClick={onComplete}>
-          Close Dashboard
-        </Button>
-      </div>
+      <TransactionSuccessCard 
+        title="Payroll Complete!"
+        subtitle={`Successfully paid ${employees.length} employees on the Stellar blockchain.`}
+        txHash={txHash || ""}
+        amount={totalAmount.toFixed(2)}
+        walletAddress={walletAddr}
+        walletBalance={updatedBalance}
+        extraDetails={[
+          { label: "Network Fee", value: `${networkFeeEst.toFixed(5)} XLM` },
+          { label: "Processing Time", value: `${timeTaken}s` },
+          { label: "Status", value: "Verified on Ledger" }
+        ]}
+        onClose={onComplete}
+      />
     );
   }
 

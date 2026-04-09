@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { SessionWatcher } from "@/components/SessionWatcher";
 import { OrgProvider } from "@/lib/context/OrgContext";
+import WalletStatusBar from "@/components/shared/WalletStatusBar";
 
 export default function EmployerLayout({
   children,
@@ -46,7 +47,12 @@ export default function EmployerLayout({
   return (
     <OrgProvider>
       <SessionWatcher />
-      {children}
+      <div className="flex flex-col h-screen">
+        <WalletStatusBar />
+        <div className="flex-1 overflow-hidden">
+          {children}
+        </div>
+      </div>
     </OrgProvider>
   );
 }

@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { SessionWatcher } from "@/components/SessionWatcher";
+import WalletStatusBar from "@/components/shared/WalletStatusBar";
 
 export default function EmployeeLayout({
   children,
@@ -34,6 +35,7 @@ export default function EmployeeLayout({
   return (
     <>
       <SessionWatcher />
+      <WalletStatusBar />
       {children}
     </>
   );
