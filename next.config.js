@@ -1,20 +1,25 @@
 const nextConfig = {
+  reactStrictMode: true,
   images: {
+    domains: ['stellar.expert', 'horizon-testnet.stellar.org'],
     remotePatterns: [
       { protocol: 'https', hostname: '**.mongodb.net' },
     ],
   },
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
     ignoreBuildErrors: true,
+  },
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+    }
+    return config
   },
   env: {
     NEXT_PUBLIC_STELLAR_NETWORK: process.env.NEXT_PUBLIC_STELLAR_NETWORK,
@@ -22,3 +27,4 @@ const nextConfig = {
   },
 }
 module.exports = nextConfig
+

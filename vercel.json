@@ -1,0 +1,12 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "regions": ["iad1"],
+  "env": {
+    "NEXT_PUBLIC_STELLAR_NETWORK": "testnet",
+    "NEXT_PUBLIC_STELLAR_HORIZON": "https://horizon-testnet.stellar.org",
+    "NEXT_PUBLIC_SOROBAN_RPC": "https://soroban-testnet.stellar.org"
+  }
+}

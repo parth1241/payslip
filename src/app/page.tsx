@@ -746,7 +746,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1] min-h-[140px] sm:min-h-[160px]">
+              <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1] min-h-[90px] sm:min-h-[160px]">
                 The future of <br className="hidden sm:block" />
                 <Typewriter words={["payroll", "global payments", "salary disbursement"]} />
               </h1>
@@ -755,17 +755,17 @@ export default function HomePage() {
                 Send salaries to anyone, anywhere. Verified on-chain. Instant settlement. 100% non-custodial and secure.
               </p>
 
-                <div className="flex flex-wrap items-center gap-4 mb-14 relative">
+                <div className="flex flex-col sm:flex-row items-center gap-4 mb-14 relative w-full sm:w-auto">
                   <Link
                     href="/signup"
-                    className="rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] hover:bg-indigo-400 transition-all duration-300 relative overflow-hidden group"
+                    className="w-full sm:w-auto text-center rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] hover:bg-indigo-400 transition-all duration-300 relative overflow-hidden group"
                   >
                     <span className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
                     Launch app
                   </Link>
                   <Link
                     href="/#features"
-                    className="rounded-full border border-primary/40 px-8 py-3.5 text-sm font-semibold text-foreground hover:bg-primary/5 transition-all duration-300"
+                    className="w-full sm:w-auto text-center rounded-full border border-primary/40 px-8 py-3.5 text-sm font-semibold text-foreground hover:bg-primary/5 transition-all duration-300"
                   >
                     View demo
                   </Link>

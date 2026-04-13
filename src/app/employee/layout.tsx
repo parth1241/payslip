@@ -1,10 +1,13 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
 import { SessionWatcher } from "@/components/SessionWatcher";
 import WalletStatusBar from "@/components/shared/WalletStatusBar";
+import Level1StatusBadge from "@/components/shared/Level1StatusBadge";
+import { Networks } from "@stellar/stellar-sdk";
 
 export default function EmployeeLayout({
   children,
@@ -12,6 +15,27 @@ export default function EmployeeLayout({
   children: React.ReactNode;
 }) {
   const { data: session, status } = useSession();
+  const [wrongNetwork, setWrongNetwork] = useState(false);
+
+  useEffect(() => {
+    async function checkNetwork() {
+      if (typeof window === 'undefined') return
+      try {
+        const { getNetworkDetails } = await import('@stellar/freighter-api')
+        const details = await getNetworkDetails()
+        if (details.networkPassphrase !== Networks.TESTNET) {
+          setWrongNetwork(true)
+        } else {
+          setWrongNetwork(false)
+        }
+      } catch {
+        // Freighter not installed
+      }
+    }
+    checkNetwork()
+    const interval = setInterval(checkNetwork, 10000)
+    return () => clearInterval(interval)
+  }, [])
 
   if (status === "loading") {
     return (
@@ -33,10 +57,21 @@ export default function EmployeeLayout({
   }
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col relative">
       <SessionWatcher />
+      {wrongNetwork && (
+        <div className="w-full bg-rose-600 text-white py-2 px-4 flex items-center justify-center gap-2 z-[100] animate-in slide-in-from-top duration-300">
+          <AlertTriangle className="h-4 w-4" />
+          <span className="text-xs font-bold uppercase tracking-wider">
+            Wrong Network: Switch Freighter to Stellar Testnet to use PaySlip
+          </span>
+        </div>
+      )}
       <WalletStatusBar />
-      {children}
-    </>
+      <div className="flex-1">
+        {children}
+      </div>
+      <Level1StatusBadge />
+    </div>
   );
 }

@@ -1,141 +1,100 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
-import { isConnected, getAddress } from '@stellar/freighter-api'
-import { getWalletBalance } from '@/lib/stellar'
-import { RefreshCw, ExternalLink, Copy, Check, Wallet } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useState, useEffect } from 'react'
+import { getXLMBalance } from '@/lib/stellar'
+import { Button } from '@/components/ui/button'
+import { RefreshCw, Send, ExternalLink, Wallet } from 'lucide-react'
+import SendXLMPanel from './SendXLMPanel'
+import { Badge } from '@/components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function WalletStatusBar() {
-  const [address, setAddress] = useState<string | null>(null)
-  const [balance, setBalance] = useState<string>("0.00")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const [address, setAddress] = useState('')
+  const [balance, setBalance] = useState<number | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
-  const fetchWalletData = useCallback(async () => {
-    setLoading(true)
-    setError(false)
-    try {
-      if (await isConnected()) {
-        const res = await getAddress()
-        
-        // Handle result which can be a string address or { address: string }
-        let userAddress = "";
-        if (res && typeof res === 'object' && 'address' in res) {
-          userAddress = res.address;
-        } else if (typeof res === 'string') {
-          userAddress = res;
-        }
-
-        if (userAddress) {
-          setAddress(userAddress)
-          const bal = await getWalletBalance(userAddress)
-          setBalance(bal || "0.00")
-        } else {
-          setAddress(null)
-          setBalance("0.00")
-        }
-      } else {
-        setAddress(null)
-        setBalance("0.00")
-      }
-    } catch (err) {
-      console.error("Failed to fetch wallet data", err)
-      setError(true)
-    } finally {
-      setTimeout(() => setLoading(false), 500)
+  useEffect(() => {
+    const savedAddress = localStorage.getItem('stellar_address')
+    if (savedAddress) {
+      setAddress(savedAddress)
+      refresh()
     }
   }, [])
 
-  useEffect(() => {
-    fetchWalletData()
-    const interval = setInterval(fetchWalletData, 30000)
-    return () => clearInterval(interval)
-  }, [fetchWalletData])
-
-  const copyAddress = () => {
-    if (address) {
-      navigator.clipboard.writeText(address)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    }
+  const refresh = async () => {
+    const savedAddress = localStorage.getItem('stellar_address')
+    if (!savedAddress) return
+    
+    setIsRefreshing(true)
+    const bal = await getXLMBalance(savedAddress)
+    setBalance(bal)
+    setTimeout(() => setIsRefreshing(false), 800)
   }
 
-  return (
-    <div className="sticky top-0 z-40 w-full h-12 bg-[#0d0d1f]/80 backdrop-blur-md border-b border-indigo-500/20 transition-all duration-300">
-      <div className="max-w-[1400px] mx-auto px-4 h-full flex items-center justify-between gap-4 overflow-x-auto no-scrollbar">
-        
-        {/* Left Side: Connection Status */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div className={cn(
-            "w-2 h-2 rounded-full",
-            address ? "bg-indigo-500 animate-pulse shadow-[0_0_8px_rgba(99,102,241,0.8)]" : "bg-muted-foreground"
-          )} />
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-            <span className={cn(
-               "text-[10px] uppercase font-bold tracking-widest",
-               address ? "text-white" : "text-muted-foreground"
-            )}>
-              {address ? "Freighter Connected" : "Wallet Not Connected"}
-            </span>
-            {address && (
-              <span className="font-mono text-[10px] text-indigo-400/80">
-                ({address.slice(0, 4)}...{address.slice(-4)})
-              </span>
-            )}
-          </div>
-        </div>
+  if (!address) return null
 
-        {/* Center: XLM Balance */}
-        <div className="flex items-center gap-4 bg-white/5 px-4 py-1.5 rounded-full border border-white/5">
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] uppercase text-muted-foreground font-semibold">Balance</span>
-            <div className="flex items-center gap-1.5">
-              <span className="text-sm font-bold text-indigo-400 tabular-nums">
-                {balance}
+  return (
+    <div className="h-14 w-full border-b bg-card/50 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-40 transition-all">
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+          <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary">Connected</span>
+          <span className="text-[11px] font-mono text-muted-foreground opacity-60">
+            {address.slice(0, 6)}...{address.slice(-6)}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3">
+          <div className="flex flex-col items-end">
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-black tracking-tighter text-primary">
+                {balance !== null ? balance.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 }) : '---'}
               </span>
               <span className="text-[10px] font-bold text-muted-foreground">XLM</span>
+              <button 
+                onClick={refresh} 
+                disabled={isRefreshing}
+                className="p-1 hover:bg-primary/10 rounded-full transition-colors"
+                title="Refresh Balance"
+              >
+                <RefreshCw className={`h-3 w-3 text-primary ${isRefreshing ? 'animate-spin' : ''}`} />
+              </button>
             </div>
-          </div>
-          <div className="h-3 w-[1px] bg-white/10" />
-          <button 
-            onClick={fetchWalletData}
-            disabled={loading}
-            className={cn(
-              "text-muted-foreground hover:text-indigo-400 transition-colors",
-              loading && "animate-spin text-indigo-400"
-            )}
-          >
-            <RefreshCw size={14} />
-          </button>
-          <div className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[9px] font-black uppercase tracking-tighter text-amber-500">
-            Testnet
+            <Badge variant="ghost" className="h-4 text-[8px] font-black uppercase tracking-tighter p-0 text-muted-foreground">
+              Stellar Testnet
+            </Badge>
           </div>
         </div>
 
-        {/* Right Side: Quick Actions */}
-        <div className="flex items-center gap-2 shrink-0">
-          {address && (
-            <>
-              <button 
-                onClick={copyAddress}
-                className="p-1.5 text-muted-foreground hover:text-white transition-colors rounded-lg hover:bg-white/5 flex items-center gap-2 text-xs"
-              >
-                {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
-                <span className="hidden lg:inline">Copy Address</span>
-              </button>
-              <a 
-                href={`https://stellar.expert/explorer/testnet/account/${address}`}
-                target="_blank"
-                className="p-1.5 text-muted-foreground hover:text-white transition-colors rounded-lg hover:bg-white/5 flex items-center gap-2 text-xs"
-              >
-                <ExternalLink size={14} />
-                <span className="hidden lg:inline">Explorer</span>
-              </a>
-            </>
-          )}
+        <div className="h-8 w-[1px] bg-border/40 mx-2" />
+
+        <div className="flex items-center gap-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="sm" className="bg-primary text-white h-9 px-4 font-bold tracking-tight shadow-lg shadow-primary/20">
+                <Send className="h-3.5 w-3.5 mr-2" />
+                Send XLM
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[480px] p-0 border-none bg-transparent shadow-none">
+              <SendXLMPanel />
+            </DialogContent>
+          </Dialog>
+
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-9 w-9 text-muted-foreground hover:text-primary hover:bg-primary/5"
+            onClick={() => window.open(`https://stellar.expert/explorer/testnet/account/${address}`, '_blank')}
+          >
+            <ExternalLink className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </div>

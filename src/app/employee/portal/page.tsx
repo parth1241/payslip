@@ -29,6 +29,9 @@ import {
   getTransactionHistory,
   type PaymentRecord,
 } from "@/lib/stellar";
+import WalletManager from "@/components/shared/WalletManager";
+import SendXLMPanel from "@/components/shared/SendXLMPanel";
+import { History } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -535,6 +538,51 @@ export default function EmployeePortal() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Stellar Wallet Section */}
+        <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <WalletManager />
+            <SendXLMPanel compact />
+          </div>
+          <Card className="bg-card border-border/20 shadow-xl overflow-hidden">
+            <CardHeader className="py-4 border-b border-border/10 bg-muted/30">
+              <div className="flex items-center gap-2">
+                <History className="h-4 w-4 text-primary" />
+                <span className="text-sm font-bold uppercase tracking-widest">Recent Activity</span>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+               <div className="divide-y divide-border/10">
+                  {payslips.length > 0 ? (
+                    payslips.slice(0, 3).map((tx) => (
+                      <div key={tx.id} className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                            <ArrowDownLeft className="h-4 w-4" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold">XLM Received</p>
+                            <p className="text-[10px] text-muted-foreground font-mono">{tx.transactionHash.slice(0, 8)}...</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs font-bold text-emerald-500">+{formatXLM(tx.amount)} XLM</p>
+                          <p className="text-[10px] text-muted-foreground">{formatDate(tx.createdAt)}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="py-12 text-center">
+                       <p className="text-xs text-muted-foreground italic font-medium">
+                        Connect wallet to view ledger history
+                      </p>
+                    </div>
+                  )}
+               </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* ── Section Header ── */}
         <div className="flex items-center justify-between">
