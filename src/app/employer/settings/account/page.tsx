@@ -306,7 +306,7 @@ export default function AccountSettings() {
                           <svg className="h-5 w-5" /* laptop icon */></svg>
                         )}
                         {s.deviceName} – {s.browser}
-                        {s.current && <span className="ml-2 px-2 py-0.5 bg-green-100 text-green-800 rounded">Current</span>}
+                        {s.current && <span className="ml-2 px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded">Current</span>}
                       </td>
                       <td className="p-2">{s.ip}</td>
                       <td className="p-2">{new Date(s.lastActive).toLocaleString()}</td>

@@ -21,9 +21,9 @@ export function Toast({
 
   const config = {
     success: {
-      icon: <CheckCircle2 className="h-5 w-5 text-emerald-400" />,
-      border: "border-l-emerald-500",
-      bg: "bg-emerald-500/10",
+      icon: <CheckCircle2 className="h-5 w-5 text-cyan-400" />,
+      border: "border-l-cyan-500",
+      bg: "bg-cyan-500/10",
     },
     error: {
       icon: <XCircle className="h-5 w-5 text-red-400" />,

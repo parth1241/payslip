@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import connectDB from "@/lib/db";
 import { Employee } from "@/lib/models/Employee";
 import { checkOrgAccess } from "@/lib/checkOrgAccess";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(req: Request) {
   try {
@@ -16,7 +16,7 @@ export async function GET(req: Request) {
     const orgId = searchParams.get("orgId");
     if (!orgId) return NextResponse.json({ error: "orgId required" }, { status: 400 });
 
-    const userId = (session.user as any).userId;
+    const userId = (session.user as { userId?: string }).userId; if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     await connectDB();
 
     const access = await checkOrgAccess(userId, orgId, "viewer");
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    const userId = (session.user as any).userId;
+    const userId = (session.user as { userId?: string }).userId; if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     await connectDB();
 
     const access = await checkOrgAccess(userId, orgId, "admin");

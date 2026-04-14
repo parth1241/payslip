@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 export const dynamic = 'force-dynamic';
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import connectDB from "@/lib/db";
 import { Invite } from "@/lib/models/Invite";
 import { Organisation } from "@/lib/models/Organisation";

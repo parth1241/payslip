@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import connectDB from "@/lib/db";
 import { User } from "@/lib/models/User";
 import { Organisation } from "@/lib/models/Organisation";
@@ -14,7 +14,10 @@ export async function PATCH(req: Request) {
     }
     
     await connectDB();
-    const userId = (session.user as any).userId;
+    const userId = (session.user as { userId?: string }).userId;
+    if (!userId) {
+      return NextResponse.json({ error: "User ID missing from session" }, { status: 400 });
+    }
     
     const body = await req.json();
     const { walletAddress, orgId } = body;

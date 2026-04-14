@@ -19,7 +19,7 @@ function getShade(name: string) {
 }
 
 export function OrgSwitcher() {
-  const { activeOrg, orgs, switchOrg, createOrg, loading } = useOrg();
+  const { activeOrg, orgs, switchOrg, createOrg } = useOrg();
   const [open, setOpen] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -60,20 +60,6 @@ export function OrgSwitcher() {
       setName("");
     }
   };
-
-  if (!activeOrg) {
-    return (
-      <div className="flex items-center gap-3 px-6 py-5">
-        <button
-          onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 text-primary hover:underline"
-        >
-          <Plus className="h-4 w-4" />
-          Create Organisation
-        </button>
-      </div>
-    );
-  }
 
   if (!activeOrg) {
     return (

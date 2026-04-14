@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import connectDB from "@/lib/db";
 import { Organisation } from "@/lib/models/Organisation";
 import { checkOrgAccess } from "@/lib/checkOrgAccess";
@@ -16,7 +16,8 @@ export async function GET(
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     await connectDB();
-    const requesterId = (session.user as any).userId;
+    const requesterId = (session.user as { userId?: string }).userId;
+    if (!requesterId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const access = await checkOrgAccess(requesterId, params.orgId, "viewer");
     if (!access.allowed) return NextResponse.json({ error: access.reason }, { status: 403 });

@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import PageLayout from "@/components/PageLayout";
-import { Zap, Globe, Eye, Zap as Lightning, Satellite, ArrowRight, Check, ShieldCheck, Mail, MapPin } from "lucide-react";
+import { Zap, Globe, Eye, Zap as Lightning, Satellite, ArrowRight } from "lucide-react";
 
 export default function AboutPage() {
   return (
@@ -118,7 +118,7 @@ export default function AboutPage() {
               <p className="text-lg text-textMuted leading-relaxed">
                 Stellar processes transactions in under 5 seconds for a fraction of a cent. It&rsquo;s the only blockchain built specifically for payments and financial access. We chose Stellar because it shares our mission of financial inclusion.
               </p>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-bold rounded">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 text-xs font-bold rounded">
                 Optimal for high-velocity payroll
               </div>
             </div>
@@ -141,7 +141,7 @@ export default function AboutPage() {
                 title: "Accessible", 
                 body: "Anyone with a wallet can receive payment. No bank required. We bridge the gap for the unbanked.",
                 icon: Globe,
-                color: "emerald"
+                color: "cyan"
               },
               { 
                 title: "Transparent", 
@@ -163,13 +163,13 @@ export default function AboutPage() {
               },
             ].map((v, i) => (
               <div key={i} className={`p-8 rounded-2xl bg-surfaceUp/50 border border-white/5 border-t-4 shadow-xl hover:-translate-y-2 transition-all duration-300 group ${
-                v.color === "emerald" ? "border-t-emerald-500" :
+                v.color === "cyan" ? "border-t-cyan-500" :
                 v.color === "sky" ? "border-t-sky-500" :
                 v.color === "amber" ? "border-t-amber-500" :
                 "border-t-fuchsia-500"
               }`}>
                 <div className={`w-12 h-12 rounded-xl mb-6 flex items-center justify-center transition-colors ${
-                  v.color === "emerald" ? "bg-emerald-500/10 text-emerald-400" :
+                  v.color === "cyan" ? "bg-cyan-500/10 text-cyan-400" :
                   v.color === "sky" ? "bg-sky-500/10 text-sky-400" :
                   v.color === "amber" ? "bg-amber-500/10 text-amber-400" :
                   "bg-fuchsia-500/10 text-fuchsia-400"

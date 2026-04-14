@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import connectDB from "@/lib/db";
 import { User } from "@/lib/models/User";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import bcrypt from "bcryptjs";
 
 export async function PATCH(req: Request) {
@@ -19,7 +19,9 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "New password must be at least 8 characters" }, { status: 400 });
     }
 
-    const userId = (session.user as any).id || (session.user as any).userId;
+    const userId =
+      (session.user as { id?: string; userId?: string }).id ||
+      (session.user as { id?: string; userId?: string }).userId;
     await connectDB();
 
     const user = await User.findById(userId);

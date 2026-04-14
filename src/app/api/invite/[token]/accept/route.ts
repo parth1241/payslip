@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import connectDB from "@/lib/db";
 import { Invite } from "@/lib/models/Invite";
 import { Organisation } from "@/lib/models/Organisation";
@@ -15,7 +15,7 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     await connectDB();
-    const userId = (session.user as any).userId;
+    const userId = (session.user as { userId?: string }).userId; if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const invite = await Invite.findOne({ token: params.token, status: "pending" });
     if (!invite || invite.expiresAt < new Date()) {
@@ -27,7 +27,11 @@ export async function POST(
     if (!org) {
       return NextResponse.json({ error: "Org not found" }, { status: 404 });
     }
-    const exists = org.members.some((m: any) => m.userId.toString() === userId);
+    const exists = (org.members as unknown[]).some((m) => {
+      const mm = m as { userId?: { toString: () => string } | string };
+      const id = typeof mm.userId === "string" ? mm.userId : mm.userId?.toString?.();
+      return id === userId;
+    });
     if (exists) {
       invite.status = 'revoked'; // Invalidate if they bypass constraints
       await invite.save();

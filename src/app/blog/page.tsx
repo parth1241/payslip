@@ -16,7 +16,7 @@ interface Article {
   author: string;
   readTime: string;
   date: string;
-  accent: "indigo" | "sky" | "amber" | "fuchsia" | "emerald";
+  accent: "indigo" | "sky" | "amber" | "fuchsia" | "cyan";
 }
 
 const articles: Article[] = [
@@ -68,7 +68,7 @@ const articles: Article[] = [
     author: "Parth",
     readTime: "4 min",
     date: "March 2025",
-    accent: "emerald"
+    accent: "cyan"
   }
 ];
 
@@ -77,7 +77,7 @@ const colorMap = {
   sky: { badge: "bg-sky-500/10 text-sky-400", glow: "hover:border-sky-500/60 shadow-sky-500/5", grad: "from-sky-500/30 to-sky-900/10", text: "text-sky-400" },
   amber: { badge: "bg-amber-500/10 text-amber-400", glow: "hover:border-amber-500/60 shadow-amber-500/5", grad: "from-amber-500/30 to-amber-900/10", text: "text-amber-400" },
   fuchsia: { badge: "bg-fuchsia-500/10 text-fuchsia-400", glow: "hover:border-fuchsia-500/60 shadow-fuchsia-500/5", grad: "from-fuchsia-500/30 to-fuchsia-900/10", text: "text-fuchsia-400" },
-  emerald: { badge: "bg-emerald-500/10 text-emerald-400", glow: "hover:border-emerald-500/60 shadow-emerald-500/5", grad: "from-emerald-500/30 to-emerald-900/10", text: "text-emerald-400" },
+  cyan: { badge: "bg-cyan-500/10 text-cyan-400", glow: "hover:border-cyan-500/60 shadow-cyan-500/5", grad: "from-cyan-500/30 to-cyan-900/10", text: "text-cyan-400" },
 };
 
 // --- Featured Article Hero ---

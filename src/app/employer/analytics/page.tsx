@@ -75,7 +75,7 @@ export default function AnalyticsPage() {
           </h1>
           <p className="text-muted-foreground mt-1">Real-time insights across your on-chain payroll ecosystem.</p>
         </div>
-        <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-xs font-bold">
+        <div className="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-xl text-cyan-400 text-xs font-bold">
            <Activity className="h-4 w-4 animate-pulse" />
            Live Network Tracking
         </div>
@@ -86,7 +86,7 @@ export default function AnalyticsPage() {
         {[
           { label: "Avg Payment", val: "$4,200", trend: "+12.5%", icon: DollarSign, color: "text-indigo-400", bg: "bg-indigo-500/10" },
           { label: "Active Recipients", val: "48", trend: "+2", icon: Users, color: "text-violet-400", bg: "bg-violet-500/10" },
-          { label: "On-Chain Volume", val: "152k", trend: "+4.2k", icon: TrendingUp, color: "text-emerald-400", bg: "bg-emerald-500/10" },
+          { label: "On-Chain Volume", val: "152k", trend: "+4.2k", icon: TrendingUp, color: "text-cyan-400", bg: "bg-cyan-500/10" },
           { label: "Global Nodes", val: "12", trend: "0", icon: Globe, color: "text-cyan-400", bg: "bg-cyan-500/10" },
         ].map((s, i) => (
           <div key={i} className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all group">
@@ -97,7 +97,7 @@ export default function AnalyticsPage() {
               </div>
             </div>
             <div className="text-3xl font-black text-white mb-2">{s.val}</div>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-400">
                <ArrowUpRight className="h-3 w-3" />
                {s.trend} <span className="text-muted-foreground font-medium ml-1">v. last month</span>
             </div>
@@ -249,7 +249,7 @@ export default function AnalyticsPage() {
                Smart Insight
             </div>
             <h3 className="text-2xl md:text-3xl font-black text-white mb-4 tracking-tighter leading-tight">
-               Your organisation saved <span className="text-emerald-400">$3,420</span> in settlement fees this quarter using Stellar.
+               Your organisation saved <span className="text-cyan-400">$3,420</span> in settlement fees this quarter using Stellar.
             </h3>
             <p className="text-lg text-slate-400 max-w-xl leading-relaxed mb-8">
                By bypassing traditional bank rails, PaySlip reduced your cross-border friction from 3.5% to <span className="font-bold text-white">0.05%</span>.

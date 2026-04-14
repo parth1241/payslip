@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import PageLayout from "@/components/PageLayout";
-import { Zap, GitBranch, Send, Users, Plus, ExternalLink, Layout, Code, Rocket } from "lucide-react";
+import { GitBranch, Send, Users, Plus, ExternalLink, Layout, Code, Rocket } from "lucide-react";
 
 // --- Team Card Component ---
 interface TeamMember {
@@ -149,8 +149,8 @@ export default function TeamPage() {
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03] pointer-events-none" />
           
           <div className="max-w-4xl mx-auto text-center relative z-10 pt-12">
-            <Link href="/careers" className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest mb-8 hover:bg-emerald-500/20 transition-all group">
-              We're hiring <ExternalLink className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+            <Link href="/careers" className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-[10px] font-extrabold text-cyan-400 uppercase tracking-widest mb-8 hover:bg-cyan-500/20 transition-all group">
+              We&apos;re hiring <ExternalLink className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
             </Link>
             <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-8">
               The team behind <br />

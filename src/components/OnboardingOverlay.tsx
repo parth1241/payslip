@@ -26,7 +26,7 @@ const SLIDES = [
     description: "Onboard your employees instantly using just their public Stellar wallet addresses. No routing numbers needed.",
     icon: (
       <div className="grid grid-cols-2 gap-2">
-        <div className="h-8 w-8 bg-emerald-500/20 rounded-full border border-emerald-500" />
+        <div className="h-8 w-8 bg-cyan-500/20 rounded-full border border-cyan-500" />
         <div className="h-8 w-8 bg-primary/20 rounded-full border border-primary" />
         <div className="h-8 w-8 bg-cyan-400/20 rounded-full border border-cyan-400" />
         <div className="h-8 w-8 bg-slate-700 rounded-full border border-border" />

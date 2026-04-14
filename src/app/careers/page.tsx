@@ -45,7 +45,7 @@ const OPEN_ROLES = [
 
 const BENEFITS = [
   { title: 'Paid in XLM', desc: 'Optional crypto salaries via Stellar.', icon: Coins, color: 'text-amber-400', bg: 'bg-amber-400/10' },
-  { title: 'Remote First', desc: 'Work from anywhere in the world.', icon: Globe, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+  { title: 'Remote First', desc: 'Work from anywhere in the world.', icon: Globe, color: 'text-cyan-400', bg: 'bg-cyan-400/10' },
   { title: 'Equity', desc: 'Stock options for early employees.', icon: Rocket, color: 'text-violet-400', bg: 'bg-violet-400/10' },
   { title: 'Move Fast', desc: 'Iterate daily on modern tech stacks.', icon: Zap, color: 'text-sky-400', bg: 'bg-sky-400/10' },
 ]
@@ -59,7 +59,7 @@ export default function CareersPage() {
         <section className="relative py-24 px-6 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(16,185,129,0.1),_transparent_40%)]" />
           <div className="max-w-4xl mx-auto text-center relative z-10">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest mb-8">
+            <span className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-[10px] font-extrabold text-cyan-400 uppercase tracking-widest mb-8">
               <CheckCircle2 className="h-3 w-3" /> We're hiring
             </span>
             <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-8">

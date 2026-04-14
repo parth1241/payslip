@@ -251,7 +251,7 @@ export default function EmployeeProfile() {
                   
                   {profile?.linkedWallet && (
                     <button onClick={handleCopyWallet} className="p-1.5 rounded-md hover:bg-white/5 text-muted-foreground transition">
-                       {copiedLink ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
+                       {copiedLink ? <Check className="h-4 w-4 text-cyan-400" /> : <Copy className="h-4 w-4" />}
                     </button>
                   )}
                 </div>
@@ -267,7 +267,7 @@ export default function EmployeeProfile() {
           {/* -- EXPORTS -- */}
           <div className="bg-card border border-border/20 rounded-2xl p-8 space-y-6">
             <div className="flex items-center gap-2 mb-2">
-              <Download className="h-5 w-5 text-emerald-400" />
+              <Download className="h-5 w-5 text-cyan-400" />
               <h3 className="text-[16px] font-bold text-foreground tracking-tight">Network Activity</h3>
             </div>
 
@@ -275,7 +275,7 @@ export default function EmployeeProfile() {
               Export standard network structures downloading transaction sequences securely verified locally directly via testnet historical archives natively scoped over your specific mapped arrays.
             </p>
 
-            <Button onClick={handleDownloadCSV} disabled={isDownloading || !profile?.linkedWallet} className="w-full h-11 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 transition-all font-semibold">
+            <Button onClick={handleDownloadCSV} disabled={isDownloading || !profile?.linkedWallet} className="w-full h-11 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/20 transition-all font-semibold">
               {isDownloading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : 'Download Payslips (CSV)'}
             </Button>
           </div>

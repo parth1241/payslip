@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const PayslipPDF = ({ txHash, employeeName, amount, date }) => {
+const PayslipPDF = ({ txHash, employeeName, amount, date }: { txHash: string; employeeName: string; amount: number; date: string }) => {
   const baseSalary = amount;
   const networkFee = 0.00001;
   const netPayment = baseSalary - networkFee;

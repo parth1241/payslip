@@ -1,5 +1,10 @@
 import { Organisation } from "./models/Organisation";
 
+type OrgMemberLike = {
+  userId?: { toString: () => string } | string;
+  role?: string;
+};
+
 export async function checkOrgAccess(
   userId: string,
   orgId: string,
@@ -15,7 +20,11 @@ export async function checkOrgAccess(
       return { allowed: true, userRole: "owner" };
     }
 
-    const member = org.members.find((m: unknown) => (m as any).userId.toString() === userId);
+    const member = (org.members as unknown[]).find((m) => {
+      const mm = m as OrgMemberLike;
+      const id = typeof mm.userId === "string" ? mm.userId : mm.userId?.toString?.();
+      return id === userId;
+    }) as OrgMemberLike | undefined;
     if (!member) {
       return { allowed: false, reason: "not a member" };
     }
@@ -26,12 +35,13 @@ export async function checkOrgAccess(
       owner: 2,
     };
 
-    if (levels[(member as any).role as keyof typeof levels] >= levels[required]) {
-      return { allowed: true, userRole: (member as any).role };
+    const role = member.role ?? "viewer";
+    if (levels[role as keyof typeof levels] >= levels[required]) {
+      return { allowed: true, userRole: role };
     }
 
     return { allowed: false, reason: "insufficient role" };
-  } catch (_err) {
+  } catch {
     return { allowed: false, reason: "server error" };
   }
 }

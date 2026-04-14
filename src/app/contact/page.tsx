@@ -48,8 +48,8 @@ export default function ContactPage() {
             <div className="p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl relative overflow-hidden">
               {formState === 'success' ? (
                 <div className="py-20 text-center flex flex-col items-center animate-in fade-in zoom-in duration-500">
-                  <div className="w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-8">
-                    <CheckCircle className="h-10 w-10 text-emerald-400" />
+                  <div className="w-20 h-20 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-8">
+                    <CheckCircle className="h-10 w-10 text-cyan-400" />
                   </div>
                   <h3 className="text-2xl font-bold mb-4">Thanks! We've got it.</h3>
                   <p className="text-slate-400 max-w-xs mx-auto">
@@ -75,7 +75,7 @@ export default function ContactPage() {
                           required
                           type="text" 
                           placeholder="Your Name"
-                          className="w-full bg-[#030712] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/15 transition-all"
+                          className="w-full bg-[#030712] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15 transition-all"
                         />
                       </div>
                       <div className="space-y-2">
@@ -84,7 +84,7 @@ export default function ContactPage() {
                           required
                           type="email" 
                           placeholder="hello@example.com"
-                          className="w-full bg-[#030712] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/15 transition-all"
+                          className="w-full bg-[#030712] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15 transition-all"
                         />
                       </div>
                     </div>
@@ -95,13 +95,13 @@ export default function ContactPage() {
                         <input 
                           type="text" 
                           placeholder="Acme Corp"
-                          className="w-full bg-[#030712] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/15 transition-all"
+                          className="w-full bg-[#030712] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15 transition-all"
                         />
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Subject</label>
                         <select 
-                          className="w-full bg-[#030712] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/15 transition-all appearance-none"
+                          className="w-full bg-[#030712] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15 transition-all appearance-none"
                         >
                           <option>General</option>
                           <option>Sales</option>
@@ -118,7 +118,7 @@ export default function ContactPage() {
                         required
                         rows={5}
                         placeholder="Tell us what's on your mind..."
-                        className="w-full bg-[#030712] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/15 transition-all resize-none"
+                        className="w-full bg-[#030712] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15 transition-all resize-none"
                       />
                     </div>
 
@@ -204,7 +204,7 @@ export default function ContactPage() {
                   {/* London */}
                   <LocationDot x="48%" y="28%" color="bg-cyan-500" label="London" />
                   {/* Singapore */}
-                  <LocationDot x="78%" y="58%" color="bg-emerald-500" label="Singapore" />
+                  <LocationDot x="78%" y="58%" color="bg-cyan-500" label="Singapore" />
                 </div>
               </div>
             </div>

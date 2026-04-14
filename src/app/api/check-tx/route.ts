@@ -19,9 +19,16 @@ export async function GET(req: Request) {
       createdAt: tx.created_at,
       feeCharged: tx.fee_charged,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     // If the horizon server returns 404, it means the transaction constitutes pending status
-    if (error?.response?.status === 404) {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'response' in error &&
+      typeof (error as { response?: unknown }).response === 'object' &&
+      (error as { response?: { status?: unknown } }).response !== null &&
+      (error as { response?: { status?: unknown } }).response?.status === 404
+    ) {
       return NextResponse.json({ status: 'pending', successful: false });
     }
     

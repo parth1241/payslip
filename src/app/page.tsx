@@ -62,7 +62,7 @@ function ParticleNetwork() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         
-        // Use a mix of colors: indigo, violet, cyan, emerald
+        // Use a mix of colors: indigo, violet, cyan, cyan
         const colors = ["rgba(99,102,241, 0.4)", "rgba(139,92,246, 0.4)", "rgba(6,182,212, 0.4)", "rgba(16,185,129, 0.4)"];
         ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
         ctx.fill();
@@ -251,7 +251,7 @@ function HowItWorksStep({ step, title, body, icon: Icon, color, tag }: { step: n
   const colorMap: Record<string, string> = {
     violet: "bg-violet-500 border-violet-500/20 text-violet-400 shadow-[0_0_15px_rgba(139,92,246,0.3)]",
     cyan: "bg-cyan-500 border-cyan-500/20 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.3)]",
-    emerald: "bg-emerald-500 border-emerald-500/20 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
+    cyan: "bg-cyan-500 border-cyan-500/20 text-cyan-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
   };
 
   return (
@@ -283,7 +283,7 @@ function DashboardMockup() {
         <div className="flex gap-1.5 grayscale group-hover:grayscale-0 transition-all duration-500">
           <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
           <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+          <div className="w-2.5 h-2.5 rounded-full bg-cyan-500/80" />
         </div>
         <div className="flex-1 max-w-md bg-black/20 rounded-md py-1 px-4 text-[10px] text-textMuted mx-auto border border-white/5 flex items-center gap-2">
           <Globe className="h-3 w-3 opacity-30" />
@@ -304,7 +304,7 @@ function DashboardMockup() {
               { icon: Activity, label: "Dashboard", color: "text-indigo-500", active: true },
               { icon: Users, label: "Employees", color: "text-violet-500" },
               { icon: Zap, label: "Payroll", color: "text-cyan-500" },
-              { icon: Globe, label: "History", color: "text-emerald-500" },
+              { icon: Globe, label: "History", color: "text-cyan-500" },
             ].map((item, i) => (
               <div 
                 key={i} 
@@ -347,7 +347,7 @@ function DashboardMockup() {
           <div className="mt-8 rounded-xl border border-white/5 bg-background/20 overflow-hidden" onMouseEnter={() => setHoverArea("table")} onMouseLeave={() => setHoverArea(null)}>
             <div className="bg-surfaceUp/30 px-4 py-3 flex justify-between items-center border-b border-white/5">
               <p className="text-xs font-bold">Recent Hires</p>
-              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <div className="h-2 w-2 rounded-full bg-cyan-500 animate-pulse" />
             </div>
             <div className="p-2 space-y-1">
               {[
@@ -366,7 +366,7 @@ function DashboardMockup() {
                   </div>
                   <div className="text-right">
                     <p className="text-[11px] font-bold font-mono">+{row.amt} XLM</p>
-                    <p className="text-[8px] text-emerald-500 font-bold uppercase">Success</p>
+                    <p className="text-[8px] text-cyan-500 font-bold uppercase">Success</p>
                   </div>
                 </div>
               ))}
@@ -386,7 +386,7 @@ function DashboardMockup() {
           </div>
         )}
         {hoverArea === "table" && (
-          <div className="absolute top-2/3 right-1/2 animate-bounce z-20 px-3 py-1.5 bg-emerald-500 text-white rounded-md text-[10px] font-bold shadow-2xl">
+          <div className="absolute top-2/3 right-1/2 animate-bounce z-20 px-3 py-1.5 bg-cyan-500 text-white rounded-md text-[10px] font-bold shadow-2xl">
             On-chain records
           </div>
         )}
@@ -427,16 +427,16 @@ function StellarFlowDiagram() {
 
         {/* Arrow 2 Container */}
         <div className="w-[100px] h-[2px] bg-white/10 relative hidden md:block">
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-emerald-500 animate-[flowDot_2s_infinite_0.5s]" />
-          <div className="absolute -right-2 -top-1 border-t-4 border-l-4 border-transparent border-l-emerald-500 h-2 w-2" />
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-cyan-500 animate-[flowDot_2s_infinite_0.5s]" />
+          <div className="absolute -right-2 -top-1 border-t-4 border-l-4 border-transparent border-l-cyan-500 h-2 w-2" />
         </div>
 
         {/* Employee Wallet */}
         <div className="flex flex-col items-center group">
-          <div className="w-16 h-16 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-            <Users className="h-7 w-7 text-emerald-400" />
+          <div className="w-16 h-16 rounded-2xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+            <Users className="h-7 w-7 text-cyan-400" />
           </div>
-          <p className="mt-4 text-xs font-bold tracking-widest text-emerald-400 uppercase">Employees</p>
+          <p className="mt-4 text-xs font-bold tracking-widest text-cyan-400 uppercase">Employees</p>
         </div>
 
       </div>
@@ -818,12 +818,12 @@ export default function HomePage() {
                     <Activity className="h-4 w-4 text-primary" />
                     Live transactions
                   </h3>
-                  <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-md">
+                  <div className="flex items-center gap-1.5 px-2 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-md">
                     <span className="relative flex h-1.5 w-1.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-cyan-500" />
                     </span>
-                    <span className="text-[10px] font-bold text-emerald-400 tracking-wider uppercase">Live</span>
+                    <span className="text-[10px] font-bold text-cyan-400 tracking-wider uppercase">Live</span>
                   </div>
                 </div>
 
@@ -886,7 +886,7 @@ export default function HomePage() {
                 <div className="w-1.5 h-1.5 rounded-full bg-cyan-500" /> NON-CUSTODIAL WALLETS
               </span>
               <span className="text-sm font-bold text-slate-500 flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> 100% TRANSPARENT
+                <div className="w-1.5 h-1.5 rounded-full bg-cyan-500" /> 100% TRANSPARENT
               </span>
               <span className="text-sm font-bold text-slate-500 flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-amber-500" /> GLOBAL COMPLIANCE
@@ -1011,7 +1011,7 @@ function StatsSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <StatCard icon={Zap} borderColor="border-indigo-500" gradient="from-indigo-500 to-violet-500" label="Payments processed" target={2400000} suffix="+" />
           <StatCard icon={Globe} borderColor="border-cyan-500" gradient="from-cyan-500 to-sky-500" label="XLM disbursed" target={18700000} suffix="+" />
-          <StatCard icon={MapPin} borderColor="border-emerald-500" gradient="from-emerald-500 to-green-500" label="Countries reached" target={47} />
+          <StatCard icon={MapPin} borderColor="border-cyan-500" gradient="from-cyan-500 to-indigo-500" label="Countries reached" target={47} />
           <StatCard icon={Building2} borderColor="border-fuchsia-500" gradient="from-fuchsia-500 to-pink-500" label="Companies using PaySlip" target={340} suffix="+" />
         </div>
         <div className="flex flex-col md:flex-row gap-6">
@@ -1043,7 +1043,7 @@ function FeaturesSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           <FeatureCard index={0} icon={Rocket} title="Instant global payroll" body="Send salaries to any wallet address worldwide. Transactions confirm in under 5 seconds on Stellar." iconBg="bg-indigo-500/15" iconColor="text-indigo-400" hoverGlow="indigo-500/40" />
           <FeatureCard index={1} icon={Coins} title="Near-zero fees" body="Pay your entire team for less than $0.01 in network fees. No hidden charges, ever." iconBg="bg-amber-500/15" iconColor="text-amber-400" hoverGlow="amber-500/40" />
-          <FeatureCard index={2} icon={ShieldCheck} title="Immutable payslips" body="Every payment creates a permanent blockchain record. No disputes, no questions." iconBg="bg-emerald-500/15" iconColor="text-emerald-400" hoverGlow="emerald-500/40" />
+          <FeatureCard index={2} icon={ShieldCheck} title="Immutable payslips" body="Every payment creates a permanent blockchain record. No disputes, no questions." iconBg="bg-cyan-500/15" iconColor="text-cyan-400" hoverGlow="cyan-500/40" />
           <FeatureCard index={3} icon={ArrowRightLeft} title="XLM and USDC" body="Pay in native XLM or USDC stablecoin. Employees choose what they receive." iconBg="bg-cyan-500/15" iconColor="text-cyan-400" hoverGlow="cyan-500/40" />
           <FeatureCard index={4} icon={Users} title="Unlimited employees" body="Add employees, set salaries, and manage multiple organisations from one dashboard." iconBg="bg-violet-500/15" iconColor="text-violet-400" hoverGlow="violet-500/40" />
           <FeatureCard index={5} icon={FileDown} title="Branded payslips" body="Generate beautiful PDF payslips with your company branding and QR verification." iconBg="bg-fuchsia-500/15" iconColor="text-fuchsia-400" hoverGlow="fuchsia-500/40" />
@@ -1076,7 +1076,7 @@ function DetailedHowItWorksSection() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12 relative z-10">
             <HowItWorksStep step={1} title="Connect your wallet" body="Install Freighter and connect your Stellar wallet in one click." icon={Wallet} color="violet" tag="Takes 30 seconds" />
             <HowItWorksStep step={2} title="Add your team" body="Import employees with their wallet addresses." icon={Users} color="cyan" tag="Import via CSV" />
-            <HowItWorksStep step={3} title="Pay with one click" body="Disburse to your entire team simultaneously." icon={Zap} color="emerald" tag="Under 5 seconds" />
+            <HowItWorksStep step={3} title="Pay with one click" body="Disburse to your entire team simultaneously." icon={Zap} color="cyan" tag="Under 5 seconds" />
           </div>
         </div>
         <div className="space-y-24">
@@ -1101,7 +1101,7 @@ function PricingSection({ isAnnual, setIsAnnual }: { isAnnual: boolean, setIsAnn
           <div className="flex items-center gap-4 bg-surface rounded-full p-1 border border-white/5 shadow-inner">
             <button onClick={() => setIsAnnual(false)} className={`px-6 py-2 rounded-full text-xs font-bold transition-all ${!isAnnual ? "bg-white/10 text-white shadow-lg" : "text-textMuted hover:text-textPrimary"}`}>Monthly</button>
             <button onClick={() => setIsAnnual(true)} className={`px-6 py-2 rounded-full text-xs font-bold transition-all relative ${isAnnual ? "bg-white/10 text-white shadow-lg" : "text-textMuted hover:text-textPrimary"}`}>
-              Annual <span className="absolute -top-7 -right-4 bg-emerald-500/20 text-emerald-400 text-[9px] font-bold py-1 px-2 rounded-md border border-emerald-500/30">SAVE 20%</span>
+              Annual <span className="absolute -top-7 -right-4 bg-cyan-500/20 text-cyan-400 text-[9px] font-bold py-1 px-2 rounded-md border border-cyan-500/30">SAVE 20%</span>
             </button>
           </div>
         </div>
@@ -1135,8 +1135,8 @@ function FinalCTASection() {
           <Link href="/contact" className="w-full sm:w-auto px-10 py-4 border border-white/20 hover:bg-white/5 rounded-full font-bold text-lg transition-all text-center">Book a demo</Link>
         </div>
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-xs text-textMuted/60 font-medium tracking-wide">
-          <span className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-500" /> No credit card required</span>
-          <span className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-500" /> Cancel anytime</span>
+          <span className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-500" /> No credit card required</span>
+          <span className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-500" /> Cancel anytime</span>
         </div>
       </div>
     </section>

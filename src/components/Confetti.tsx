@@ -32,7 +32,7 @@ export function Confetti() {
     const particles: Particle[] = []
     const particleCount = 150
     let animationFrameId: number
-    let startTime = Date.now()
+    const startTime = Date.now()
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
@@ -53,7 +53,7 @@ export function Confetti() {
       const elapsed = Date.now() - startTime
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      particles.forEach((p, i) => {
+      particles.forEach((p) => {
         p.x += p.vx
         p.y += p.vy
         p.rotation += p.rotationSpeed

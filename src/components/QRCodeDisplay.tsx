@@ -43,7 +43,7 @@ export default function QRCodeDisplay({ address, label = "Wallet Address" }: QRC
           <div className="flex items-center gap-3 w-full">
             <Button 
               onClick={handleCopy}
-              className={`flex-1 h-11 font-bold gap-2 transition-all border ${copied ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' : 'bg-white/5 text-white border-white/10 hover:bg-indigo-500 hover:border-indigo-400'}`}
+              className={`flex-1 h-11 font-bold gap-2 transition-all border ${copied ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/20' : 'bg-white/5 text-white border-white/10 hover:bg-indigo-500 hover:border-indigo-400'}`}
             >
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               {copied ? 'Copied' : 'Copy Address'}

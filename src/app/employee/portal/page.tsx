@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -176,7 +176,7 @@ function PayslipCard({ record }: { record: PaymentRecord }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           txHash: record.transactionHash,
-          employeeName: truncateAddress(record.to),
+          employeeName: truncateAddress(record.to || ""),
           amount: record.amount,
           date: formatDate(record.createdAt),
         }),
@@ -236,7 +236,7 @@ function PayslipCard({ record }: { record: PaymentRecord }) {
               <div className="flex items-center gap-3">
                 <Badge
                   variant="outline"
-                  className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[11px] font-semibold gap-1 hover:bg-emerald-500/15"
+                  className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 text-[11px] font-semibold gap-1 hover:bg-cyan-500/15"
                 >
                   <CheckCircle2 className="h-3 w-3" />
                   Confirmed
@@ -336,7 +336,13 @@ function EmptyPayslips() {
 
 export default function EmployeePortal() {
   const { data: session } = useSession();
-  const lastLoginText = session?.user?.lastLogin ? formatDistanceToNow(new Date(session.user.lastLogin as any), { addSuffix: true }) : "First login";
+  const lastLoginValue = session?.user?.lastLogin;
+  const lastLoginText = lastLoginValue
+    ? formatDistanceToNow(
+        new Date(lastLoginValue instanceof Date ? lastLoginValue : String(lastLoginValue)),
+        { addSuffix: true }
+      )
+    : "First login";
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [payslips, setPayslips] = useState<PaymentRecord[]>([]);
   const [loading, setLoading] = useState(false);
@@ -457,12 +463,12 @@ export default function EmployeePortal() {
               title="Copy full address"
               id="copy-address-btn"
             >
-              <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+              <div className="h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
               <code className="font-mono">
                 {truncateAddress(walletAddress)}
               </code>
               {copied ? (
-                <Check className="h-3 w-3 text-emerald-400" />
+                <Check className="h-3 w-3 text-cyan-400" />
               ) : (
                 <Copy className="h-3 w-3 text-muted-foreground" />
               )}
@@ -558,7 +564,7 @@ export default function EmployeePortal() {
                     payslips.slice(0, 3).map((tx) => (
                       <div key={tx.id} className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                          <div className="h-8 w-8 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-500">
                             <ArrowDownLeft className="h-4 w-4" />
                           </div>
                           <div>
@@ -567,7 +573,7 @@ export default function EmployeePortal() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-xs font-bold text-emerald-500">+{formatXLM(tx.amount)} XLM</p>
+                          <p className="text-xs font-bold text-cyan-500">+{formatXLM(tx.amount)} XLM</p>
                           <p className="text-[10px] text-muted-foreground">{formatDate(tx.createdAt)}</p>
                         </div>
                       </div>

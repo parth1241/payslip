@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Server } from '@stellar/stellar-sdk'
+import { Horizon } from '@stellar/stellar-sdk'
 
 const HORIZON_URL = process.env.NEXT_PUBLIC_STELLAR_HORIZON || 'https://horizon-testnet.stellar.org'
-const server = new Server(HORIZON_URL)
+const server = new Horizon.Server(HORIZON_URL)
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,12 +27,12 @@ export async function POST(req: NextRequest) {
         ledger: tx.ledger_attr,
         createdAt: tx.created_at,
         source: tx.source_account,
-        fee: tx.fee_value,
+        fee: (tx as any).fee_value || (tx as any).fee_charged || "0",
         memo: tx.memo,
         successful: tx.successful
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Verify transaction error:', error)
     return NextResponse.json({ verified: false, error: 'Failed to verify transaction' }, { status: 500 })
   }

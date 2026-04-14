@@ -22,8 +22,11 @@ export async function POST(req: Request) {
     const walletToken = jwt.sign({ userId: user._id.toString() }, secret, { expiresIn: '5m' });
 
     return NextResponse.json({ email: user.email, token: walletToken });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Wallet login check failed:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: error?.message || "Internal Server Error" }, 
+      { status: 500 }
+    );
   }
 }

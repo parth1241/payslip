@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Server } from '@stellar/stellar-sdk'
+import { Horizon, Keypair } from '@stellar/stellar-sdk'
 
 const HORIZON_URL = process.env.NEXT_PUBLIC_STELLAR_HORIZON || 'https://horizon-testnet.stellar.org'
-const server = new Server(HORIZON_URL)
+const server = new Horizon.Server(HORIZON_URL)
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -10,6 +10,12 @@ export async function GET(req: NextRequest) {
 
   if (!address) {
     return NextResponse.json({ error: 'Address is required' }, { status: 400 })
+  }
+
+  try {
+    Keypair.fromPublicKey(address)
+  } catch {
+    return NextResponse.json({ error: 'Invalid Stellar address' }, { status: 400 })
   }
 
   try {
@@ -22,8 +28,15 @@ export async function GET(req: NextRequest) {
       balance,
       funded: true
     })
-  } catch (error: any) {
-    if (error.response?.status === 404) {
+  } catch (error: unknown) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "response" in error &&
+      typeof (error as { response?: unknown }).response === "object" &&
+      (error as { response?: { status?: unknown } }).response !== null &&
+      (error as { response?: { status?: unknown } }).response?.status === 404
+    ) {
       return NextResponse.json({
         address,
         balance: 0,

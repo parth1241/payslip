@@ -176,7 +176,7 @@ const statusConfig: Record<
 > = {
   active: {
     label: "Active",
-    className: "bg-emerald/15 text-emerald border-emerald/25",
+    className: "bg-cyan/15 text-cyan border-cyan/25",
   },
   pending: {
     label: "Pending",
@@ -503,7 +503,7 @@ export default function EmployerDashboard() {
     if (!successResult) {
       throw new Error(results[0]?.error || "Transaction failed");
     }
-    return successResult.txHash;
+    return successResult.txHash || "";
   }
 
   function startPayrollTracker() {
@@ -717,7 +717,7 @@ export default function EmployerDashboard() {
               </CardHeader>
               <CardContent>
                 <p className="text-3xl font-bold text-white font-mono tracking-tighter">{animEmployees.toFixed(0)}</p>
-                <p className="text-[11px] font-medium text-emerald mt-3 flex items-center gap-1">
+                <p className="text-[11px] font-medium text-cyan mt-3 flex items-center gap-1">
                   <ArrowUpRight className="h-3 w-3" /> 12% vs last month
                 </p>
               </CardContent>
@@ -747,7 +747,7 @@ export default function EmployerDashboard() {
                 <p className="text-3xl font-bold font-mono tracking-tighter gradient-text-2">
                   {formatXLM(animDisbursed)} <span className="text-sm font-sans text-textMuted uppercase">XLM</span>
                 </p>
-                <p className="text-[11px] font-medium text-emerald mt-3 flex items-center gap-1">
+                <p className="text-[11px] font-medium text-cyan mt-3 flex items-center gap-1">
                   <ArrowUpRight className="h-3 w-3" /> 4.2% vs last month
                 </p>
               </CardContent>

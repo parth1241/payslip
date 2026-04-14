@@ -172,10 +172,10 @@ export default function SendXLMPanel({ defaultMemo = '', onSuccess, compact = fa
 
   if (step === 'SUCCESS' && txResult?.success) {
     return (
-      <Card className="border-emerald-500/20 bg-card shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-        <div className="bg-emerald-500/5 px-6 py-4 flex items-center justify-center border-b border-emerald-500/10">
-          <div className="h-12 w-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
-             <CheckCircle2 className="h-8 w-8 text-emerald-500 stroke-[3px]" />
+      <Card className="border-cyan-500/20 bg-card shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+        <div className="bg-cyan-500/5 px-6 py-4 flex items-center justify-center border-b border-cyan-500/10">
+          <div className="h-12 w-12 rounded-full bg-cyan-500/10 flex items-center justify-center">
+             <CheckCircle2 className="h-8 w-8 text-cyan-500 stroke-[3px]" />
           </div>
         </div>
         
@@ -198,7 +198,7 @@ export default function SendXLMPanel({ defaultMemo = '', onSuccess, compact = fa
             </div>
             <div className="p-4">
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block mb-1">Status</label>
-              <div className="flex items-center gap-1.5 text-emerald-500 font-bold">
+              <div className="flex items-center gap-1.5 text-cyan-500 font-bold">
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 <span>Confirmed</span>
               </div>
@@ -220,7 +220,7 @@ export default function SendXLMPanel({ defaultMemo = '', onSuccess, compact = fa
                   setCopied(true)
                   setTimeout(() => setCopied(false), 2000)
                 }}>
-                   {copied ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+                   {copied ? <CheckCircle2 className="h-4 w-4 text-cyan-500" /> : <Copy className="h-4 w-4" />}
                 </Button>
              </div>
           </div>
@@ -328,9 +328,9 @@ export default function SendXLMPanel({ defaultMemo = '', onSuccess, compact = fa
                 onChange={(e) => setDestination(e.target.value)}
                 onBlur={() => validate()}
                 placeholder="G... (Stellar public key)"
-                className={`font-mono text-xs pr-10 py-5 border-2 transition-all duration-200 ${errors.destination ? 'border-rose-500/50 bg-rose-500/5' : destination && !errors.destination ? 'border-emerald-500/50 bg-emerald-500/5' : 'focus:border-primary/50'}`}
+                className={`font-mono text-xs pr-10 py-5 border-2 transition-all duration-200 ${errors.destination ? 'border-rose-500/50 bg-rose-500/5' : destination && !errors.destination ? 'border-cyan-500/50 bg-cyan-500/5' : 'focus:border-primary/50'}`}
               />
-              {destination && !errors.destination && <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-500" />}
+              {destination && !errors.destination && <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-cyan-500" />}
               {errors.destination && <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-rose-500 animate-pulse" />}
             </div>
             {errors.destination && <p className="text-[10px] font-bold text-rose-500">{errors.destination}</p>}

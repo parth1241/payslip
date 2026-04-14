@@ -179,7 +179,7 @@ export default function OrganisationSettingsPage() {
                 ].map((item, i) => (
                   <li key={i} className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">{item.label}</span>
-                    <span className={`font-bold ${item.status === 'Pro' ? 'text-indigo-400' : 'text-emerald-400'}`}>{item.status}</span>
+                    <span className={`font-bold ${item.status === 'Pro' ? 'text-indigo-400' : 'text-cyan-400'}`}>{item.status}</span>
                   </li>
                 ))}
              </ul>

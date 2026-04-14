@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import connectDB from "@/lib/db";
 import { Organisation } from "@/lib/models/Organisation";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     }
     await connectDB();
 
-    const userId = (session.user as any).userId;
+    const userId = (session.user as { userId?: string }).userId; if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     if (!userId) {
        return NextResponse.json({ error: "User ID missing from session" }, { status: 400 });
     }
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     }
     await connectDB();
 
-    const userId = (session.user as any).userId;
+    const userId = (session.user as { userId?: string }).userId; if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     if (!userId) {
        return NextResponse.json({ error: "User ID missing" }, { status: 400 });
     }

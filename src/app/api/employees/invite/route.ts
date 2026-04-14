@@ -4,7 +4,7 @@ import connectDB from "@/lib/db";
 import { Employee } from "@/lib/models/Employee";
 import { User } from "@/lib/models/User";
 import { checkOrgAccess } from "@/lib/checkOrgAccess";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import crypto from "crypto";
 
 export async function POST(req: Request) {
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const userId = (session.user as any).userId;
+    const userId = (session.user as { userId?: string }).userId; if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     await connectDB();
 
     const access = await checkOrgAccess(userId, orgId, "admin");

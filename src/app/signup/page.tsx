@@ -168,7 +168,7 @@ export default function SignupPage() {
                           if (strength === 1) color = "bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]";
                           if (strength === 2) color = "bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]";
                           if (strength === 3) color = "bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]";
-                          if (strength === 4) color = "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]";
+                          if (strength === 4) color = "bg-cyan-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]";
                         }
                         return <div key={i} className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${color}`} />
                       })}
@@ -181,7 +181,7 @@ export default function SignupPage() {
                     <div className="relative">
                       <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required placeholder="••••••••••••" className={`bg-background/50 h-10 border-border/20 text-[14px] focus-visible:ring-1 ${confirmPassword && !pxPasswordsMatch ? 'border-red-500/50 focus-visible:ring-red-500' : 'focus-visible:ring-primary/50'}`} />
                       {pxPasswordsMatch && (
-                        <Check className="absolute right-3 top-2.5 h-4 w-4 text-emerald-500 animate-in zoom-in" />
+                        <Check className="absolute right-3 top-2.5 h-4 w-4 text-cyan-500 animate-in zoom-in" />
                       )}
                     </div>
                   </div>

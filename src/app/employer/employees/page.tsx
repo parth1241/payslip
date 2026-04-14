@@ -207,14 +207,14 @@ export default function EmployeesPage() {
                   </TableCell>
                   <TableCell className="py-4">
                     <div className="font-bold text-white flex items-center gap-1.5">
-                      <DollarSign className="h-3.5 w-3.5 text-emerald-400" />
+                      <DollarSign className="h-3.5 w-3.5 text-cyan-400" />
                       {emp.salary.toLocaleString()} <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-muted-foreground">{emp.currency}</span>
                     </div>
                   </TableCell>
                   <TableCell className="py-4">
                     <Badge variant="outline" className={`
                       gap-1.5 font-bold tracking-tight py-1
-                      ${emp.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
+                      ${emp.status === 'active' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20' : 
                         emp.status === 'pending' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 
                         'bg-red-500/10 text-red-400 border-red-500/20'}
                     `}>

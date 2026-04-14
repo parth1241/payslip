@@ -47,3 +47,6 @@ next-env.d.ts
 # Testing
 /coverage
 /.nyc_output
+
+# Local DB
+mongodb_data/

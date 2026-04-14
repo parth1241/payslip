@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import connectDB from "@/lib/db";
 import { Organisation } from "@/lib/models/Organisation";
 import { checkOrgAccess } from "@/lib/checkOrgAccess";
@@ -15,7 +15,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     await connectDB();
-    const userId = (session.user as any).userId;
+    const userId = (session.user as { userId?: string }).userId; if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Must be admin or owner
     const access = await checkOrgAccess(userId, params.orgId, "admin");
@@ -23,11 +23,15 @@ export async function PATCH(
       return NextResponse.json({ error: access.reason }, { status: 403 });
     }
 
-    const updates = await req.json();
+    const updates = (await req.json()) as {
+      name?: string;
+      industry?: string;
+      settings?: unknown;
+    };
     
     // Whitelist updatable fields
     const { name, industry, settings } = updates;
-    const patchData: any = {};
+    const patchData: Record<string, unknown> = {};
     if (name) patchData.name = name;
     if (industry) patchData.industry = industry;
     if (settings) patchData.settings = settings;
@@ -55,7 +59,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     await connectDB();
-    const userId = (session.user as any).userId;
+    const userId = (session.user as { userId?: string }).userId; if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Must be owner
     const access = await checkOrgAccess(userId, params.orgId, "owner");

@@ -117,8 +117,8 @@ export default function PayrollPage() {
           </div>
         </div>
         <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center gap-5">
-          <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-            <Wallet className="h-6 w-6 text-emerald-400" />
+          <div className="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20">
+            <Wallet className="h-6 w-6 text-cyan-400" />
           </div>
           <div>
             <div className="text-[12px] font-bold text-muted-foreground uppercase tracking-widest">Total XLM</div>
@@ -191,7 +191,7 @@ export default function PayrollPage() {
         <div className="p-8 bg-white/[0.02] border-t border-white/5">
            <div className="flex items-center justify-between gap-6">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                <ShieldCheck className="h-4 w-4 text-cyan-500" />
                 Payments are non-custodial and signed via Freighter
               </div>
               <Button 

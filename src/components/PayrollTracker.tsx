@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { Loader2, Check, ExternalLink, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Confetti } from "@/components/Confetti";
 import { PayslipPDF } from "./PayslipPDF";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import TransactionSuccessCard from "./shared/TransactionSuccessCard";
@@ -68,10 +67,12 @@ export function PayrollTracker({
         
         // Step 2: Broadcasting state
         setPipelineStage(2);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Execution aborted:", err);
         if (!active) return;
-        setErrorMsg(err.message || "Transaction explicitly rejected by Freighter or Horizon");
+        setErrorMsg(
+          err instanceof Error ? err.message : "Transaction explicitly rejected by Freighter or Horizon"
+        );
       }
     }
 
@@ -202,7 +203,7 @@ export function PayrollTracker({
               <div
                 className={`h-8 w-8 rounded-full flex items-center justify-center border-2 mb-2 transition-all ${
                   isComplete
-                    ? "bg-emerald-500/20 border-emerald-500 text-emerald-400"
+                    ? "bg-cyan-500/20 border-cyan-500 text-cyan-400"
                     : isActive
                     ? "bg-primary/20 border-primary text-primary animate-pulse shadow-[0_0_15px_rgba(99,102,241,0.5)]"
                     : "bg-card border-border text-muted-foreground"
@@ -265,7 +266,7 @@ export function PayrollTracker({
               key={emp.walletAddress}
               className={`p-3 rounded-lg border text-[13px] transition-all flex items-center justify-between ${
                 isConfirmed
-                  ? "bg-emerald-500/10 border-emerald-500/30 shadow-[inset_0_0_15px_rgba(16,185,129,0.1)]"
+                  ? "bg-cyan-500/10 border-cyan-500/30 shadow-[inset_0_0_15px_rgba(16,185,129,0.1)]"
                   : isProcessing
                   ? "bg-primary/10 border-primary/30"
                   : "bg-muted/30 border-transparent"
@@ -274,7 +275,7 @@ export function PayrollTracker({
               <div className="flex items-center gap-3">
                 <div
                   className={`flex h-7 w-7 items-center justify-center rounded-full text-white font-medium text-[11px] ${
-                    isConfirmed ? "bg-emerald-500" : "bg-slate-700"
+                    isConfirmed ? "bg-cyan-500" : "bg-slate-700"
                   }`}
                 >
                   {emp.name
@@ -285,13 +286,13 @@ export function PayrollTracker({
                 <div>
                   <p
                     className={`font-medium ${
-                      isConfirmed ? "text-emerald-50" : "text-foreground"
+                      isConfirmed ? "text-cyan-50" : "text-foreground"
                     }`}
                   >
                     {emp.name}
                   </p>
                   {isConfirmed && txHash ? (
-                    <p className="text-[10px] font-mono text-emerald-400/80">
+                    <p className="text-[10px] font-mono text-cyan-400/80">
                       Tx: {txHash.slice(0, 6)}...{txHash.slice(-6)}
                     </p>
                   ) : null}
@@ -307,7 +308,7 @@ export function PayrollTracker({
                   </p>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     {isConfirmed ? (
-                      <Check className="h-3 w-3 text-emerald-400" />
+                      <Check className="h-3 w-3 text-cyan-400" />
                     ) : isProcessing ? (
                       <Loader2 className="h-3 w-3 text-primary animate-spin" />
                     ) : (
@@ -316,7 +317,7 @@ export function PayrollTracker({
                     <span
                       className={`text-[10.5px] font-medium uppercase tracking-wider ${
                         isConfirmed
-                          ? "text-emerald-400"
+                          ? "text-cyan-400"
                           : isProcessing
                           ? "text-primary"
                           : "text-slate-500"
@@ -342,7 +343,7 @@ export function PayrollTracker({
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-8 w-8 text-emerald-400 hover:bg-emerald-500/20"
+                        className="h-8 w-8 text-cyan-400 hover:bg-cyan-500/20"
                         title="Download Payslip"
                       >
                         {loading ? (

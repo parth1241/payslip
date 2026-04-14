@@ -67,7 +67,7 @@ export default function PricingPage() {
             <ul className="space-y-4 mb-10">
               {["Up to 5 employees", "Unlimited payroll runs", "Stellar XLM support", "Freighter integration", "PDF Payslips"].map((f) => (
                 <li key={f} className="flex items-center gap-3 text-sm text-slate-300">
-                  <Check className="h-4 w-4 text-emerald-400 shrink-0" />
+                  <Check className="h-4 w-4 text-cyan-400 shrink-0" />
                   {f}
                 </li>
               ))}
